@@ -22,7 +22,8 @@ declare global{
 
 // routes
 router.get('/listar', listar);
-router.get('/')
+router.post('/alunosPorProfessor',alunosPorProfessor )
+router.post('/rendimentoAluno',rendimentoJogoAluno)
 
 
 module.exports = router;
@@ -40,9 +41,9 @@ async function listar(req: any, res: any) {
 
 async function alunosPorProfessor(req: any, res: any){
     const dao = new AlunoDAO(mongoDB,'Alunos');
-
-    let result = await dao.alunosPorProfessor(req.params._id );
-
+   
+    let result = await dao.alunosPorProfessor(req.body._id );
+    
     res.send(result);
 }
 
