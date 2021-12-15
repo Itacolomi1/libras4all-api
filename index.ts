@@ -37,6 +37,7 @@ app.use(express.json());
 // app.use('/api/usuario',require('./controllers/api/usuario.controller'));
 app.use('/api/teste',require('./controllers/sala.controller'));
 app.use('/api/aluno', require('./controllers/aluno.controller'));
+app.use('/api/jogo', require('./controllers/jogo.controller'));
 
 
 /**
