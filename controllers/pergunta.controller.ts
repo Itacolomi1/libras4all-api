@@ -21,25 +21,23 @@ declare global{
 
 
 // routes
-router.get('/perguntaClasse/:classe', getQuestionsbyClass);
-router.post('/perguntasBatch', getQuestionsBatch);
+router.get('/:_id', getByID);
+
 
 
 
 module.exports = router;
 
 
-async function getQuestionsbyClass(req: any, res: any) {
+async function getByID(req: any, res: any) {
     const dao = new PerguntasDAO(mongoDB,'Perguntas');
    
-    let result = await dao.getQuestionsbyClass(req.params.classe);
+    let result = await dao.getById(req.params._id);
     
     res.send(result);
 }
 
-async function getQuestionsBatch(req: any, res: any) {
-    const dao = new PerguntasDAO(mongoDB,'Perguntas');
-}
+
 
 
 

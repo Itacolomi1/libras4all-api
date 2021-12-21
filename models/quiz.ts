@@ -1,5 +1,7 @@
 import { Jogo } from "./jogo";
+import { PerguntasQuiz } from "./perguntasQuiz";
 
 export class Quiz extends Jogo {
-    perguntas: Array<string>;
+    id_sala: string;
+    perguntas: Array<PerguntasQuiz>;
 }

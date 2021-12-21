@@ -1,7 +1,8 @@
 import { BaseDao } from "../core/baseDAO.core";
 import { Perguntas } from "../models/perguntas";
+import { PerguntasQuiz } from "../models/perguntasQuiz";
 
-export class QuizDAO extends BaseDao<Perguntas> {
+export class PerguntasDAO extends BaseDao<Perguntas> {
 
     getQuestionsbyClass(classe_pergunta: string) {
 
@@ -16,6 +17,27 @@ export class QuizDAO extends BaseDao<Perguntas> {
                 deferred.resolve();
             }
         });
+
+        return deferred.promise;
+    }
+
+    getQuestionsBatch(perguntasQuiz: any) {
+
+        var deferred = this.Q.defer();
+        let perguntasQuizDao: Array<PerguntasQuiz>;
+
+
+
+        perguntasQuiz.perguntas.array.forEach((element: any) => {
+            let pergunta = new PerguntasQuiz();
+            pergunta.classe = element.classe;
+            
+            let perguntasClasse = this.getQuestionsbyClass(element.classe);
+            pergunta.perguntasClasseId = perguntasClasse
+
+        });
+    
+      
 
         return deferred.promise;
     }
