@@ -39,6 +39,11 @@ async function getQuestionsbyClass(req: any, res: any) {
 
 async function getQuestionsBatch(req: any, res: any) {
     const dao = new PerguntasDAO(mongoDB,'Perguntas');
+
+    let result = await dao.getQuestionsBatch(req.body);
+
+    res.send(result);
+
 }
 
 

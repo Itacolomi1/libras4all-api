@@ -24,22 +24,37 @@ export class PerguntasDAO extends BaseDao<Perguntas> {
     getQuestionsBatch(perguntasQuiz: any) {
 
         var deferred = this.Q.defer();
-        let perguntasQuizDao: Array<PerguntasQuiz>;
+        let perguntasQuizDao: Array<PerguntasQuiz> = [];
 
-
-
-        perguntasQuiz.perguntas.array.forEach((element: any) => {
-            let pergunta = new PerguntasQuiz();
-            pergunta.classe = element.classe;
-            
-            let perguntasClasse = this.getQuestionsbyClass(element.classe);
-            pergunta.perguntasClasseId = perguntasClasse
-
+        let tempClasses = perguntasQuiz.perguntas.map((element: any)=>{
+            return element.classe
+        })
+        debugger;
+        this._collection.find({ classe:{$in: tempClasses}}).toArray(function (err: any, objeto: any) {
+            if (err) deferred.reject(err.name + ': ' + err.message);
+            debugger;                
+            if (objeto) {            
+                deferred.resolve(objeto);
+            } else {
+                // user not found
+                deferred.resolve();
+            }
         });
-    
-      
+
+          
 
         return deferred.promise;
     }
+
+    getIdArray(array: any) {
+        let tempArray: any[] = [];
+        array.array.forEach((element: any) => {
+            tempArray.push(element._id);
+        });
+
+        return tempArray;
+    }
+
+   
 
 }
