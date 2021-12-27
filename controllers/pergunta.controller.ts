@@ -1,4 +1,5 @@
 
+import { Perguntas } from "../models/perguntas";
 import { PerguntasDAO } from "../services/perguntas.service";
 
 
@@ -22,6 +23,7 @@ declare global{
 
 // routes
 router.get('/:_id', getByID);
+router.post('/novaPergunta',novaPergunta)
 
 
 
@@ -36,6 +38,21 @@ async function getByID(req: any, res: any) {
     
     res.send(result);
 }
+
+async function novaPergunta(req: any, res: any) {
+
+    const dao = new PerguntasDAO(mongoDB,'Perguntas');
+
+    let pergunta = new Perguntas();
+    pergunta.descricao = req.body.descricao;
+    pergunta.classe = req.body.classe;
+    pergunta.alternativas = dao.getAlternativas(req.body.alternativas);    
+   
+    let result = await dao.create(pergunta);
+    
+    res.send(result);
+}
+
 
 
 

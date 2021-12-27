@@ -1,4 +1,5 @@
 import { BaseDao } from "../core/baseDAO.core";
+import { Alternativa } from "../models/alternativa";
 import { Perguntas } from "../models/perguntas";
 import { PerguntasQuiz } from "../models/perguntasQuiz";
 
@@ -65,6 +66,21 @@ export class PerguntasDAO extends BaseDao<Perguntas> {
         });
 
         return tempArray.filter(Boolean);
+    }
+
+    getAlternativas(array: any) {
+
+        let alternativas = Array<Alternativa>();
+
+        array.forEach((element: any) => {
+            let alternativa = new Alternativa();
+            alternativa.descricao = element.texto;
+            alternativa.isRight = element.isRight;
+            alternativas.push(alternativa);
+        });
+
+        return alternativas;
+
     }
 
 
