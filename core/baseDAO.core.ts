@@ -106,4 +106,19 @@ export abstract class BaseDao<T> implements IBaseDAO<T> {
     
         return deferred.promise;
     }
+    
+    listAll(): Promise<T[]> {
+        var deferred = this.Q.defer();        
+    
+        this._collection.find().toArray(function (err: any, objeto: any) {
+            if (err) deferred.reject(err.name + ': ' + err.message);                
+            if (objeto) {            
+                deferred.resolve(objeto);
+            } else {
+                // user not found
+                deferred.resolve();
+            }
+        });
+        return deferred.promise;
+    }
 }
