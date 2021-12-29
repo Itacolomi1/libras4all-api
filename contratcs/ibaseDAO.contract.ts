@@ -8,6 +8,8 @@ export interface IBaseDAO<T> {
 
     list(item: T): Promise<T[]>;
 
+    listAll(): Promise<T[]>;
+
     getById(_id: string): Promise<T>;
 
 }

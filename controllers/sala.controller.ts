@@ -1,86 +1,80 @@
-import { Jogo } from "../models/jogo";
-import { ServiceExampleDAO } from "../services/exemplo.service";
+import { Sala } from "../models/sala";
+import { ServiceSalaDAO } from "../services/sala.service";
 
 var express = require('express');
 var router = express.Router();
-// var testeService = require('services/sala.service');
 var mongoDB = require('config/database.ts');
 const ObjectID = mongoDB.ObjectID();
 mongoDB.connect();
-
-
 
 declare global{
     var conn: any;
     var collection: any;
 }
 
-
-
-
 // routes
-router.get('/listar', listar);
-router.post('/criar', criar);
-router.put('/atualizar', atualizar);
-router.get('/:_id', getById);
-router.delete('/deletar/:_id', deletar);
+router.get('/', listarSalas);
+router.post('/', criar);
+router.put('/', atualizar);
+router.get('/:_id', obterSala);
+router.delete('/:_id', deletar);
 
 module.exports = router;
 
-async function listar(req: any, res: any) {     
-   
-    let jogo = new Jogo(); 
-   
-    const dao = new ServiceExampleDAO(mongoDB,'Jogo');
+async function listarSalas(req: any, res: any) { 
 
-    let result = await dao.list(jogo);
+    try{
+        const dao = new ServiceSalaDAO(mongoDB, "Sala");
+        let result = await dao.listAll();
+        console.log(result);
+        res.send(result);
+    }
+    catch(ex){
+        res.status(500).send(ex)
+    }
    
+}
+
+async function criar(req: any, res: any) {       
+    let sala = new Sala(); 
+    sala.codigo = obterCodigoSala(1000, 9999);
+    sala.descricao = req.body.descricao;
+    sala.ativa = false;
+    sala.tipoJogo = req.body.tipoJogo;
+    sala.dataCriacao = new Date();
+
+    const dao = new ServiceSalaDAO(mongoDB,'Sala');
+    let result = await dao.create(sala);  
     res.send(result);
 }
 
-async function criar(req: any, res: any) {     
-   
-    let jogo = new Jogo(); 
-    
-    jogo.classe = req.body.classe;
-    jogo.nome = req.body.nome;
-
-    const dao = new ServiceExampleDAO(mongoDB,'Jogo');
-
-    let result = await dao.create(jogo);
-   
-    res.send(result);
-}
-
-async function getById(req: any, res: any) {     
-
-    const dao = new ServiceExampleDAO(mongoDB,'Jogo');
-
-    let result = await dao.getById(req.params._id );
-   
-    res.send(result);
-   
+async function obterSala(req: any, res: any) {     
+    const dao = new ServiceSalaDAO(mongoDB,'Sala');
+    let result = await dao.getById(req.params._id ); 
+    res.send(result); 
 }
 
 async function deletar(req: any, res: any) {
-    const dao = new ServiceExampleDAO(mongoDB,'Jogo');
-
+    const dao = new ServiceSalaDAO(mongoDB,'Sala');
     let result = await dao.delete(req.params._id );
-   
     res.send(result);
 }
 
 async function atualizar(req: any, res: any) {
-    let jogo = new Jogo(); 
-    jogo._id = req.body._id;
-    jogo.classe = req.body.classe;
-    jogo.nome = req.body.nome;
+    let sala = new Sala(); 
+    sala.descricao = req.body.descricao;
+    sala.ativa = req.body.ativa;
     
-    const dao = new ServiceExampleDAO(mongoDB,'Jogo');
-
-    let result = await dao.update(req.body._id,jogo);
-   
+    const dao = new ServiceSalaDAO(mongoDB,'Sala');
+    let result = await dao.update(req.body._id, sala);  
     res.send(result);
 }
 
+function obterCodigoSala (min: any, max: any) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+  
+    const codigoGerado = Math.floor(Math.random() * (max - min)) + min;  
+    return codigoGerado;
+}
 
