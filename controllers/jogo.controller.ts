@@ -1,8 +1,10 @@
 
+
 import { Quiz } from "../models/quiz";
 import { PerguntasDAO } from "../services/perguntas.service";
 import { QuizDAO } from "../services/quiz.service";
-
+import { Jogo } from "../models/jogo";
+import { ServiceExampleDAO } from "../services/exemplo.service";
 
 
 var express = require('express');
@@ -20,16 +22,18 @@ declare global{
 }
 
 
-
-
-// routes
 router.get('/perguntaClasse/:classe', getQuestionsbyClass);
 router.post('/perguntasBatch', getQuestionsBatch);
 router.post('/createQuiz', createQuiz);
-
+router.get('/listar', listar);
+router.post('/criar', criar);
+router.put('/atualizar', atualizar);
+router.get('/:_id', getById);
+router.delete('/deletar/:_id', deletar);
 
 
 module.exports = router;
+
 
 
 async function getQuestionsbyClass(req: any, res: any) {
@@ -63,6 +67,62 @@ async function createQuiz(req: any, res: any) {
 
 }
 
+
+
+async function listar(req: any, res: any) {     
+   
+    let jogo = new Jogo(); 
+   
+    const dao = new ServiceExampleDAO(mongoDB,'Jogo');
+
+    let result = await dao.list(jogo);
+   
+    res.send(result);
+}
+
+async function criar(req: any, res: any) {     
+   
+    let jogo = new Jogo(); 
+    
+    jogo.classe = req.body.classe;
+    jogo.nome = req.body.nome;
+
+    const dao = new ServiceExampleDAO(mongoDB,'Jogo');
+
+    let result = await dao.create(jogo);
+   
+    res.send(result);
+}
+
+async function getById(req: any, res: any) {     
+
+    const dao = new ServiceExampleDAO(mongoDB,'Jogo');
+
+    let result = await dao.getById(req.params._id );
+   
+    res.send(result);
+   
+}
+
+async function deletar(req: any, res: any) {
+    const dao = new ServiceExampleDAO(mongoDB,'Jogo');
+
+    let result = await dao.delete(req.params._id );
+   
+    res.send(result);
+}
+
+async function atualizar(req: any, res: any) {
+    let jogo = new Jogo(); 
+    jogo.classe = req.body.classe;
+    jogo.nome = req.body.nome;
+    
+    const dao = new ServiceExampleDAO(mongoDB,'Jogo');
+
+    let result = await dao.update(req.body._id,jogo);
+   
+    res.send(result);
+}
 
 
 
