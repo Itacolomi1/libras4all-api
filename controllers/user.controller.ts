@@ -1,5 +1,5 @@
 import { User } from "../models/user";
-import { ServiceExampleDAO } from "../services/user.service";
+import { UserDAO } from "../services/user.service";
 
 var express = require('express');
 var router = express.Router();
@@ -20,8 +20,10 @@ router.post('/criar', criar);
 router.put('/atualizar', atualizar);
 router.get('/:_id', getById);
 router.delete('/deletar/:_id', deletar);
+router.post('/authenticate', authenticateUser)
 
 module.exports = router;
+
 
 async function criar(req: any, res: any) {     
    
@@ -31,7 +33,7 @@ async function criar(req: any, res: any) {
     usuario.email = req.body.email;
     usuario.password = req.body.password;
 
-    const dao = new ServiceExampleDAO(mongoDB,'Users');
+    const dao = new UserDAO(mongoDB,'Users');
 
     let result = await dao.create(usuario);
    
@@ -42,7 +44,7 @@ async function listar(req: any, res: any) {
    
     let user = new User(); 
    
-    const dao = new ServiceExampleDAO(mongoDB,'Users');
+    const dao = new UserDAO(mongoDB,'Users');
 
     let result = await dao.list(user);
    
@@ -51,7 +53,7 @@ async function listar(req: any, res: any) {
 
 async function getById(req: any, res: any) {     
 
-    const dao = new ServiceExampleDAO(mongoDB,'Users');
+    const dao = new UserDAO(mongoDB,'Users');
 
     let result = await dao.getById(req.params._id );
    
@@ -60,7 +62,7 @@ async function getById(req: any, res: any) {
 }
 
 async function deletar(req: any, res: any) {
-    const dao = new ServiceExampleDAO(mongoDB,'Users');
+    const dao = new UserDAO(mongoDB,'Users');
 
     let result = await dao.delete(req.params._id );
    
@@ -75,9 +77,30 @@ async function atualizar(req: any, res: any) {
     user.password = req.body.password;
     
     
-    const dao = new ServiceExampleDAO(mongoDB,'Users');
+    const dao = new UserDAO(mongoDB,'Users');
 
     let result = await dao.update(req.body._id,user);
    
     res.send(result);
 }
+
+function authenticateUser (req: any, res: any) {
+
+    const dao = new UserDAO(mongoDB, "Users");
+
+    dao.authenticate(req.body.email, req.body.senha)
+      .then(function (response: any) {
+        if (response) {
+          // authentication successful
+          
+          res.send({ userId: response.userId, token: response.token })                
+              } else {
+          // authentication failed
+          res.status(401).send('Usuário e/ou senha inválidos')
+              }
+      })
+      .catch(function (err: any) {
+        res.status(400).send(err)
+          })
+  }
+  

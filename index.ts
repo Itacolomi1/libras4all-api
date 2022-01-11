@@ -34,7 +34,7 @@ app.use(express.urlencoded());
 app.use(express.json());
 
 
-// app.use('/api/usuario',require('./controllers/api/usuario.controller'));
+app.use('/api/usuario',require('./controllers/user.controller'));
 app.use('/api/teste',require('./controllers/sala.controller'));
 
 
