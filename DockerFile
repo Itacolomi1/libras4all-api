@@ -1,0 +1,16 @@
+FROM node:latest
+
+LABEL Italo Martins Tomaz Rocha
+
+COPY . /var/www
+
+WORKDIR /var/www
+
+RUN npm install
+
+ENTRYPOINT ["npm","start"]
+
+EXPOSE 9090
+
+
+
