@@ -6,12 +6,13 @@ import { PerguntasQuiz } from "../models/perguntasQuiz";
 export class PerguntasDAO extends BaseDao<Perguntas> {
 
     getQuestionsbyClass(classe_pergunta: string) {
-
+        console.log('entrou no service das perguntas');
         var deferred = this.Q.defer();
 
         this._collection.find({ classe: classe_pergunta }).toArray(function (err: any, objeto: any) {
             if (err) deferred.reject(err.name + ': ' + err.message);
             if (objeto) {
+                console.log(objeto);
                 deferred.resolve(objeto);
             } else {
                 // user not found

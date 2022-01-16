@@ -40,7 +40,7 @@ async function getByID(req: any, res: any) {
 }
 
 async function novaPergunta(req: any, res: any) {
-
+    console.log('entrou na controller');
     const dao = new PerguntasDAO(mongoDB,'Perguntas');
 
     let pergunta = new Perguntas();
