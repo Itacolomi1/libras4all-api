@@ -5,7 +5,6 @@ import { AlunoDAO } from "../services/aluno.service";
 
 var express = require('express');
 var router = express.Router();
-// var testeService = require('services/sala.service');
 var mongoDB = require('config/database.ts');
 const ObjectID = mongoDB.ObjectID();
 mongoDB.connect();
@@ -22,8 +21,9 @@ declare global{
 
 // routes
 router.get('/listar', listar);
-router.post('/alunosPorProfessor',alunosPorProfessor )
-router.post('/rendimentoAluno',rendimentoJogoAluno)
+router.get('/salasPorAlunoProfesssor',salasPorAluno);
+router.post('/alunosPorProfessor',alunosPorProfessor);
+router.get('/rendimentoAluno',rendimentoJogoAluno);
 
 
 module.exports = router;
@@ -58,7 +58,7 @@ async function salasPorAluno(req: any, res: any){
 async function rendimentoJogoAluno(req: any, res: any){
     const dao = new AlunoDAO(mongoDB,'Alunos');
 
-    let result = await dao.rendimentoJogoAluno(req.body.idAluno,req.body.idSala);
+    let result = await dao.rendimentoJogoAluno(req.query.idAluno,req.query.idSala);
 
     res.send(result);
 }
