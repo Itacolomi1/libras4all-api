@@ -1,0 +1,18 @@
+FROM node:latest
+
+LABEL Italo Martins Tomaz Rocha
+
+COPY . /var/www
+
+WORKDIR /var/www
+
+RUN npm install
+
+ENTRYPOINT ["npm","start"]
+
+env PORT=9090
+
+CMD gunicorn --bind 0.0.0.0:$PORT wsgi
+
+
+
