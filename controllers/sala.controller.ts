@@ -14,9 +14,11 @@ declare global{
 
 // routes
 router.get('/', listarSalas);
+router.get('/:_id', obterSala);
+router.get('/obterMelhoresAlunos/:_id', obterMelhoresAlunos);
 router.post('/', criar);
 router.put('/', atualizar);
-router.get('/:_id', obterSala);
+router.put('/adicionarAluno', adicionarAluno);
 router.delete('/:_id', deletar);
 
 module.exports = router;
@@ -31,17 +33,18 @@ async function listarSalas(req: any, res: any) {
     }
     catch(ex){
         res.status(500).send(ex)
-    }
-   
+    }  
 }
 
 async function criar(req: any, res: any) {       
     let sala = new Sala(); 
-    sala.codigo = obterCodigoSala(1000, 9999);
+    sala.codigo = obterCodigo(1000, 9999);
     sala.descricao = req.body.descricao;
     sala.status = false;
     sala.tipoJogo = req.body.tipoJogo;
     sala.dataCriacao = new Date();
+    sala.alunos = [];
+    sala.idProfessor = req.body.idProfessor;
 
     const dao = new ServiceSalaDAO(mongoDB,'Sala');
     let result = await dao.create(sala);  
@@ -70,7 +73,23 @@ async function atualizar(req: any, res: any) {
     res.send(result);
 }
 
-function obterCodigoSala (min: any, max: any) {
+async function adicionarAluno(req: any, res: any){
+    const dao = new ServiceSalaDAO(mongoDB,'Sala');
+    let result = await dao.adicionarAluno(req.body.idSala, req.body.idAluno);  
+    res.send(result);
+}
+
+async function obterMelhoresAlunos(req: any, res: any) { 
+    const dao = new ServiceSalaDAO(mongoDB,'Sala');
+    let result = await dao.getById(req.params._id); 
+    
+    let alunos = result.alunos;
+    let alunosOrdenados = alunos.sort((a, b) => (a.pontuacao < b.pontuacao) ? 1 : -1);
+    let melhoresAlunos = alunosOrdenados.slice(0, 5);  
+    res.send(melhoresAlunos); 
+}
+
+function obterCodigo(min: any, max: any) {
     min = Math.ceil(min);
     max = Math.floor(max);
   

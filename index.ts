@@ -41,6 +41,8 @@ app.use('/api/aluno', require('./controllers/aluno.controller'));
 app.use('/api/jogo', require('./controllers/jogo.controller'));
 app.use('/api/perguntas', require('./controllers/pergunta.controller'));
 app.use('/api/sala',require('./controllers/sala.controller'));
+app.use('/api/professor',require('./controllers/professor.controller'));
+
 
 
 
