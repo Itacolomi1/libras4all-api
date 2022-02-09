@@ -14,6 +14,7 @@ declare global{
 
 // routes
 router.get('/', listarSalas);
+router.get('/listarSalasProfessor/:_id', listarSalasProfessor);
 router.get('/:_id', obterSala);
 router.get('/obterMelhoresAlunos/:_id', obterMelhoresAlunos);
 router.post('/', criar);
@@ -22,6 +23,18 @@ router.put('/adicionarAluno', adicionarAluno);
 router.delete('/:_id', deletar);
 
 module.exports = router;
+
+async function listarSalasProfessor(req: any, res: any) { 
+    try{
+        const dao = new ServiceSalaDAO(mongoDB, "Sala");
+        let result = await dao.listarSalasProfessor(req.params._id);
+        res.send(result);
+    }
+    catch(ex){
+        console.log(ex)
+        res.status(500).send(ex)
+    }  
+}
 
 async function listarSalas(req: any, res: any) { 
 
