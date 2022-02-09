@@ -20,6 +20,7 @@ declare global{
 router.get('/', listarSalas);
 router.get('/:_id', obterSala);
 router.get('/listarSalasProfessor/:_id', listarSalasProfessor);
+router.get('/listarAlunos/:_id', listarAlunos);
 router.get('/obterMelhoresAlunos/:_id', obterMelhoresAlunos);
 router.get('/listarSalasProfessorAluno/:idProfessor/:idAluno', listarSalasProfessorAluno);
 router.post('/', criar);
@@ -72,13 +73,10 @@ async function listarSalasProfessorAluno(req: any, res: any) {
         let result = await dao.listarSalasProfessor(req.params.idProfessor);
         let salas = new Array;        
 
-        result.forEach((element: any) => {  
-            let alunos = new Array;    
-            
+        result.forEach((element: any) => {             
             if(element.alunos.find((e: any) => e._id == req.params.idAluno)){
                 salas.push(element)
             }            
-            console.log(salas)
         });
 
         res.send(salas);
@@ -86,6 +84,19 @@ async function listarSalasProfessorAluno(req: any, res: any) {
     catch(ex){
         res.status(500).send(ex);
     }   
+}
+
+async function listarAlunos(req: any, res: any) { 
+    try{
+        const dao = new ServiceSalaDAO(mongoDB,'Sala');
+        let result = await dao.getById(req.params._id); 
+        
+        let alunos = result.alunos;
+        res.send(alunos); 
+    }
+    catch(ex){
+        res.status(500).send(ex);
+    }  
 }
 
 async function obterMelhoresAlunos(req: any, res: any) { 
