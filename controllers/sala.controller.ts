@@ -1,4 +1,5 @@
 //#region Importações
+import { ReadableByteStreamController } from "stream/web";
 import { Sala } from "../models/sala";
 import { ServiceSalaDAO } from "../services/sala.service";
 
@@ -23,6 +24,7 @@ router.get('/listarSalasProfessor/:_id', listarSalasProfessor);
 router.get('/listarAlunos/:_id', listarAlunos);
 router.get('/obterMelhoresAlunos/:_id', obterMelhoresAlunos);
 router.get('/listarSalasProfessorAluno/:idProfessor/:idAluno', listarSalasProfessorAluno);
+router.get('/validarCodigo/:idSala/:codigo', validarCodigo);
 router.post('/', criar);
 router.put('/', atualizar);
 router.put('/adicionarAluno', adicionarAluno);
@@ -112,6 +114,17 @@ async function obterMelhoresAlunos(req: any, res: any) {
     catch(ex){
         res.status(500).send(ex);
     }  
+}
+
+async function validarCodigo(req: any, res: any) {
+    try{
+        const dao = new ServiceSalaDAO(mongoDB,'Sala');
+        let result = await dao.getById(req.params.idSala); 
+        res.send(req.params.codigo == result.codigo); 
+    }
+    catch(ex){
+        res.status(500).send(ex);
+    }    
 }
 //#endregion
 
