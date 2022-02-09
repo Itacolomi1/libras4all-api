@@ -3,4 +3,6 @@ export class User {
     nome: string;
     email: string;    
     password: string;
+    nivel:string;
+    libracoins:number
 }

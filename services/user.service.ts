@@ -12,7 +12,7 @@ var lodash = require('lodash');
 
 export class UserDAO extends BaseDao<User>{
 
-     authenticate(login_user: any, password: any)  {
+    authenticate(login_user: any, password: any)  {
         var deferred = this.Q.defer(); 
         
             
@@ -50,6 +50,25 @@ export class UserDAO extends BaseDao<User>{
        
     
         return deferred.promise;
+    }
+
+    getNivel(idUsuario:string): Promise<boolean> {
+
+        var deferred = this.Q.defer(); 
+
+        this._collection.findOne({ _id: new this._objectID.createFromHexString(idUsuario) }, function (err: any, nivel: any) {
+            if (err) deferred.reject(err.name + ': ' + err.message);
+    
+            if (nivel) {                                                      
+                deferred.resolve(nivel.nivel);
+            } else {
+                // user not found
+                deferred.resolve();
+            }
+        });
+    
+        return deferred.promise;
+
     }
 
 }

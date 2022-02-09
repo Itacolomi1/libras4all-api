@@ -19,6 +19,7 @@ router.get('/listar', listar);
 router.post('/criar', criar);
 router.put('/atualizar', atualizar);
 router.get('/:_id', getById);
+router.get('/:_id/nivel',getNivel);
 router.delete('/deletar/:_id', deletar);
 router.post('/authenticate', authenticateUser)
 
@@ -32,7 +33,8 @@ async function criar(req: any, res: any) {
     usuario.nome = req.body.nome;
     usuario.email = req.body.email;
     usuario.password = req.body.password;
-
+    usuario.nivel = "Latão";
+    usuario.libracoins = 10;
     const dao = new UserDAO(mongoDB,'Users');
 
     let result = await dao.create(usuario);
@@ -102,5 +104,18 @@ function authenticateUser (req: any, res: any) {
       .catch(function (err: any) {
         res.status(400).send(err)
           })
-  }
+}
+
+async function getNivel(req: any,res:any) {
+
+    const idUsuario = req.params._id;
+
+    const dao = new UserDAO(mongoDB, "Users");
+
+    let result = await dao.getNivel(idUsuario);
+
+    res.send(result);
+}
+
+
   
