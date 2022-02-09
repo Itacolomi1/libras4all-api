@@ -4,7 +4,6 @@ import { BaseDao } from "../core/baseDAO.core";
 export class ServiceSalaDAO extends BaseDao<Sala>{
     
     adicionarAluno(idSala: string, idAluno: string){
-        console.log('2')
         var deferred = this.Q.defer();
 
         this._collection.findOneAndUpdate(
@@ -15,7 +14,6 @@ export class ServiceSalaDAO extends BaseDao<Sala>{
             if (obj) {                                                      
                 deferred.resolve(obj.value);
             } else {
-                // user not found
                 deferred.resolve();
             }
         });   
@@ -23,7 +21,18 @@ export class ServiceSalaDAO extends BaseDao<Sala>{
         return deferred.promise;
 
     }  
-    
 
+    listarSalasProfessor(idProfessor: string) {
+        var deferred = this.Q.defer();
+        this._collection.find({ idProfessor: idProfessor }).toArray(function (err: any, objeto: any) {
+            if (err) deferred.reject(err.name + ': ' + err.message);
+            if (objeto) {
+                deferred.resolve(objeto);
+            } else {
+                deferred.resolve();
+            }
+        });
+        return deferred.promise;
+    }
 }
 
