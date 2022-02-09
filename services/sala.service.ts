@@ -33,6 +33,6 @@ export class ServiceSalaDAO extends BaseDao<Sala>{
             }
         });
         return deferred.promise;
-    }
+    }    
 }
 
