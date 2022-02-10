@@ -1,4 +1,4 @@
-import { Professor } from './../models/professor';
+import { Usuario } from '../models/usuario';
 import { BaseDao } from "../core/baseDAO.core";
 
 declare global{
@@ -6,7 +6,7 @@ declare global{
     var collection: any;
 }
 
-export class ProfessorDAO extends BaseDao<Professor>{
+export class UsuarioDAO extends BaseDao<Usuario>{
 
 }
 

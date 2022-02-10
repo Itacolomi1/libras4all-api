@@ -1,3 +1,4 @@
+//#region Importações
 import { Professor } from "../models/professor";
 import { ProfessorDAO } from "../services/professor.service";
 
@@ -12,70 +13,120 @@ declare global{
   var conn: any;
   var collection: any;
 }
+//#endregion
 
-// routes
+//#region Rotas
+
 router.get('/', listar);
-router.get('/:_id', getById);
+router.get('/:_id', obterProfessor);
 router.post('/', criar);
-router.post('/authenticate', authenticateUser)
+router.post('/login', login)
 router.put('/', atualizar);
 router.delete('/:_id', deletar);
 
 module.exports = router;
 
-async function criar(req: any, res: any) {        
-  let professor = new Professor();   
-  professor.nome = req.body.nome;
-  professor.email = req.body.email;
-  professor.password = req.body.password;
+//#endregion
 
-  const dao = new ProfessorDAO(mongoDB,'Professores');
-  let result = await dao.create(professor); 
-  res.send(result);
+//#region Requisições GET
+
+async function listar(req: any, res: any) {    
+  try {   
+    const dao = new ProfessorDAO(mongoDB, 'Professores');
+    let resultado = await dao.listar();  
+    res.send(resultado);
+  }
+  catch(ex){
+    res.status(500).send(ex);
+  }  
 }
 
-async function listar(req: any, res: any) {       
-  let user = new Professor();   
-  const dao = new ProfessorDAO(mongoDB,'Professores');
-  let result = await dao.list(user);  
-  res.send(result);
+async function obterProfessor(req: any, res: any) { 
+  try {   
+    const dao = new ProfessorDAO(mongoDB,'Professores');    
+    let resultado = await dao.obterPeloId(req.params._id );  
+    res.send(resultado); 
+  } 
+  catch(ex){
+    res.status(500).send(ex);
+  }   
+}
+//#endregion
+
+//#region Requisições POST
+
+async function criar(req: any, res: any) {    
+  try{  
+    var emailValidado = await validarEmail(req.body.email);
+    if(emailValidado){
+      let professor = new Professor();   
+      professor.nome = req.body.nome;
+      professor.email = req.body.email;
+      professor.senha = bcrypt.hashSync(req.body.senha, 10);
+
+      const dao = new ProfessorDAO(mongoDB,'Professores');
+      let resultado = await dao.criar(professor); 
+      res.send(resultado);
+    }
+    else{
+      throw new Error("Email já cadastrado!");
+    }
+  }
+  catch(ex){
+    res.status(500).send(ex.message);
+  }  
 }
 
-async function getById(req: any, res: any) { 
-  const dao = new ProfessorDAO(mongoDB,'Professores');    
-  let result = await dao.getById(req.params._id );  
-  res.send(result);   
+async function login(req: any, res: any) {
+  try{
+    const dao = new ProfessorDAO(mongoDB, "Professores");
+    let resultado = await dao.autenticar(req.body.email, req.body.senha);  
+    res.send(resultado);
+  }
+  catch(ex){
+    res.status(500).send(ex);
+  }
 }
+//#endregion
 
-async function deletar(req: any, res: any) {
-  const dao = new ProfessorDAO(mongoDB,'Professores');
-  let result = await dao.delete(req.params._id );  
-  res.send(result);
-}
+//#region Requisições PUT
 
 async function atualizar(req: any, res: any) {
-  let user = new Professor(); 
-  user._id = req.body._id;
-  user.nome = req.body.nome;
-  user.email = req.body.email;
-  user.password = bcrypt.hashSync(req.body.password, 10);
-       
-  const dao = new ProfessorDAO(mongoDB,'Professores');
-  let result = await dao.update(req.body._id, user);  
-  res.send(result);
+  try{
+    let professor = new Professor(); 
+    professor._id = req.body._id;
+    professor.senha = bcrypt.hashSync(req.body.senha, 10);
+        
+    const dao = new ProfessorDAO(mongoDB,'Professores');
+    let resultado = await dao.atualizar(req.body._id, professor);  
+    res.send(resultado);
+  }
+  catch(ex){
+    res.status(500).send(ex.message);
+  } 
 }
 
-function authenticateUser(req: any, res: any) {
-  const dao = new ProfessorDAO(mongoDB, "Professores");
-  dao.authenticate(req.body.email, req.body.senha)
-  .then(function (response: any) {
-    if (response) {      
-      res.send({ userId: response.userId, token: response.token })                
-    } else {
-      res.status(401).send('Usuário e/ou senha inválidos')
-    }
-  })
-  .catch(function (err: any) {
-    res.status(400).send(err)
-  })
+//#endregion
+
+//#region Requisições DELETE
+
+async function deletar(req: any, res: any) {
+  try{
+    const dao = new ProfessorDAO(mongoDB,'Professores');
+    let resultado = await dao.excluir(req.params._id );  
+    res.send(resultado);
+  }
+  catch(ex){
+    res.status(500).send(ex);
+  } 
 }
+
+//#endregion
+
+//#region Métodos
+async function validarEmail(email: any){
+  const dao = new ProfessorDAO(mongoDB,'Professores');
+  let resultado = await dao.obterPeloEmail(email); 
+  return resultado === undefined;
+}
+//#endregion
