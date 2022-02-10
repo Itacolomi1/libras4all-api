@@ -4,8 +4,6 @@ import { Quiz } from "../models/quiz";
 import { PerguntasDAO } from "../services/perguntas.service";
 import { QuizDAO } from "../services/quiz.service";
 import { Jogo } from "../models/jogo";
-import { ServiceExampleDAO } from "../services/exemplo.service";
-
 
 var express = require('express');
 var router = express.Router();
