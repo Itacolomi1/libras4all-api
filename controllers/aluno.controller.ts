@@ -27,7 +27,7 @@ async function listar(req: any, res: any) {
    
     const dao = new AlunoDAO(mongoDB,'Alunos');
 
-    let result = await dao.list(jogo);
+    let result = await dao.listar();
    
     res.send(result);
 }

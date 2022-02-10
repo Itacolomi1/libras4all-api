@@ -75,7 +75,7 @@ async function listar(req: any, res: any) {
    
     const dao = new ServiceExampleDAO(mongoDB,'Jogo');
 
-    let result = await dao.list(jogo);
+    let result = await dao.listar();
    
     res.send(result);
 }
@@ -89,7 +89,7 @@ async function criar(req: any, res: any) {
 
     const dao = new ServiceExampleDAO(mongoDB,'Jogo');
 
-    let result = await dao.create(jogo);
+    let result = await dao.criar(jogo);
    
     res.send(result);
 }
@@ -98,7 +98,7 @@ async function getById(req: any, res: any) {
 
     const dao = new ServiceExampleDAO(mongoDB,'Jogo');
 
-    let result = await dao.getById(req.params._id );
+    let result = await dao.obterPeloId(req.params._id );
    
     res.send(result);
    
@@ -107,7 +107,7 @@ async function getById(req: any, res: any) {
 async function deletar(req: any, res: any) {
     const dao = new ServiceExampleDAO(mongoDB,'Jogo');
 
-    let result = await dao.delete(req.params._id );
+    let result = await dao.excluir(req.params._id );
    
     res.send(result);
 }
@@ -119,7 +119,7 @@ async function atualizar(req: any, res: any) {
     
     const dao = new ServiceExampleDAO(mongoDB,'Jogo');
 
-    let result = await dao.update(req.body._id,jogo);
+    let result = await dao.atualizar(req.body._id,jogo);
    
     res.send(result);
 }

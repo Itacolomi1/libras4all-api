@@ -3,5 +3,6 @@ export class Usuario {
     nome: string;
     email: string;    
     senha: string;
-    pontuacao: number;
+    nivel: string;
+    libracoins: number;
 }
