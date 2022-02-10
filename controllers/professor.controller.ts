@@ -2,11 +2,10 @@
 import { Professor } from "../models/professor";
 import { ProfessorDAO } from "../services/professor.service";
 
+var hash = require('object-hash');
 var express = require('express');
-var bcrypt = require('bcryptjs');
 var router = express.Router();
 var mongoDB = require('config/database.ts');
-const ObjectID = mongoDB.ObjectID();
 mongoDB.connect();
 
 declare global{
@@ -62,7 +61,7 @@ async function criar(req: any, res: any) {
       let professor = new Professor();   
       professor.nome = req.body.nome;
       professor.email = req.body.email;
-      professor.senha = bcrypt.hashSync(req.body.senha, 10);
+      professor.senha = hash(req.body.senha);
 
       const dao = new ProfessorDAO(mongoDB,'Professores');
       let resultado = await dao.criar(professor); 
@@ -80,7 +79,9 @@ async function criar(req: any, res: any) {
 async function login(req: any, res: any) {
   try{
     const dao = new ProfessorDAO(mongoDB, "Professores");
-    let resultado = await dao.autenticar(req.body.email, req.body.senha);  
+    var senhaHash = hash(req.body.senha);
+
+    let resultado = await dao.autenticar(req.body.email, senhaHash);  
     res.send(resultado);
   }
   catch(ex){
@@ -95,7 +96,7 @@ async function atualizar(req: any, res: any) {
   try{
     let professor = new Professor(); 
     professor._id = req.body._id;
-    professor.senha = bcrypt.hashSync(req.body.senha, 10);
+    professor.senha = hash(req.body.senha);
         
     const dao = new ProfessorDAO(mongoDB,'Professores');
     let resultado = await dao.atualizar(req.body._id, professor);  

@@ -93,8 +93,13 @@ export abstract class BaseDao<T> implements IBaseDAO<T> {
 
         this._collection.findOne({ email: email }, function (err: any, usuario: any) {
             if (err) deferred.reject(err.name + ': ' + err.message);   
-            if (usuario && (senha == usuario.senha)) {
-                deferred.resolve({token :jwt.sign({ sub: usuario._id }, config.secret), _id: usuario._id});
+            console.log(senha)
+            console.log(email)
+            console.log('---')
+            console.log(usuario)
+
+            if (usuario && (senha === usuario.senha)) {
+                deferred.resolve({token :jwt.sign({ id: usuario._id }, config.secret)});
             } else {
                 deferred.resolve({erro: "Login Inválido!"});
             }

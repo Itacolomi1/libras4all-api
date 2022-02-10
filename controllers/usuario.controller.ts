@@ -2,10 +2,10 @@
 import { Usuario } from "../models/usuario";
 import { UsuarioDAO } from "../services/usuario.service";
 
+var hash = require('object-hash');
 var express = require('express');
 var router = express.Router();
 var mongoDB = require('config/database.ts');
-var bcrypt = require('bcryptjs');
 mongoDB.connect();
 
 declare global{
@@ -19,8 +19,9 @@ declare global{
 
 router.get('/', listar);
 router.get('/:_id', obterUsuario);
-router.get('/autenticar', autenticar);
+router.get('/obterNivel/:_id', obterNivel);
 router.post('/', criar);
+router.post('/login', login);
 router.put('/', atualizar);
 router.delete('/:_id', deletar);
 
@@ -52,39 +53,58 @@ async function obterUsuario(req: any, res: any) {
     }    
 }
 
-async function autenticar(req: any, res: any) {
+async function obterNivel(req: any,res:any) {
     try{
-        let usuario = new Usuario(); 
-        usuario._id = req.body._id;
-        usuario.senha = bcrypt.hashSync(req.body.senha, 10);
-
+        const idUsuario = req.params._id;
         const dao = new UsuarioDAO(mongoDB, "Usuarios");
-        let resultado = await dao.autenticar(usuario._id, usuario.senha);  
-        res.send(resultado);
+        let result = await (await dao.obterPeloId(idUsuario)).nivel;
+        res.send(result);
     }
     catch(ex){
         res.status(500).send(ex);
     }
 }
 
+
 //#endregion
 
 //#region Requisições POST
 
 async function criar(req: any, res: any) {
-    try{        
-        let usuario = new Usuario();    
-        usuario.nome = req.body.nome;
-        usuario.email = req.body.email;
-        usuario.senha = bcrypt.hashSync(req.body.senha, 10);
+    try{  
+        var emailValidado = await validarEmail(req.body.email);
+        if(emailValidado){
+            let usuario = new Usuario();    
+            usuario.nome = req.body.nome;
+            usuario.email = req.body.email;
+            usuario.senha = hash(req.body.senha);
+            usuario.nivel = "Latão";
+            usuario.libracoins = 10;
 
-        const dao = new UsuarioDAO(mongoDB,'Usuarios');
-        let resultado = await dao.criar(usuario);  
+            const dao = new UsuarioDAO(mongoDB,'Usuarios');
+            let resultado = await dao.criar(usuario);  
+            res.send(resultado);
+        }
+        else{
+            throw new Error("Email já cadastrado!");
+        }
+    }
+    catch(ex){
+        res.status(500).send(ex.message);
+    }  
+}
+
+async function login(req: any, res: any) {
+    try{
+        const dao = new UsuarioDAO(mongoDB, "Usuarios");
+        var senhaHash = hash(req.body.senha);
+    
+        let resultado = await dao.autenticar(req.body.email, senhaHash);  
         res.send(resultado);
     }
     catch(ex){
         res.status(500).send(ex);
-    }  
+    }
 }
 
 
@@ -96,7 +116,7 @@ async function atualizar(req: any, res: any) {
     try{ 
         let usuario = new Usuario(); 
         usuario._id = req.body._id;
-        usuario.senha = bcrypt.hashSync(req.body.senha, 10);
+        usuario.senha = hash(req.body.senha);
 
         const dao = new UsuarioDAO(mongoDB,'Usuarios');
         let resultado = await dao.atualizar(req.body._id, usuario);  
@@ -123,4 +143,10 @@ async function deletar(req: any, res: any) {
 }
 //#endregion
 
-  
+//#region Métodos
+async function validarEmail(email: any){
+    const dao = new UsuarioDAO(mongoDB,'Usuarios');
+    let resultado = await dao.obterPeloEmail(email); 
+    return resultado === undefined;
+  }
+  //#endregion

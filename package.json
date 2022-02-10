@@ -29,6 +29,7 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "mongodb": "^3.6.5",
+    "object-hash": "^2.2.0",
     "q": "^1.5.1",
     "rootpath": "^0.1.2",
     "thread-sleep": "^2.2.0"
