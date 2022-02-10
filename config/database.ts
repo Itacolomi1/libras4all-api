@@ -6,15 +6,10 @@ declare global {
 }
 
 var config = require('config/appSettings.json');
-
-
-
 var services: any = {}
 services.connect = connect;
 services.ObjectID = ObjectID;
-
 module.exports = services;
-
 
 function connect() { 
     var connection = process.env.CUSTOMCONNSTR_connectionStringV2 || config.connectionStringV2;
