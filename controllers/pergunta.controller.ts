@@ -34,7 +34,7 @@ module.exports = router;
 async function getByID(req: any, res: any) {
     const dao = new PerguntasDAO(mongoDB,'Perguntas');
    
-    let result = await dao.getById(req.params._id);
+    let result = await dao.obterPeloId(req.params._id);
     
     res.send(result);
 }
@@ -48,7 +48,7 @@ async function novaPergunta(req: any, res: any) {
     pergunta.classe = req.body.classe;
     pergunta.alternativas = dao.getAlternativas(req.body.alternativas);    
    
-    let result = await dao.create(pergunta);
+    let result = await dao.criar(pergunta);
     
     res.send(result);
 }
