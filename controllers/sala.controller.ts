@@ -1,5 +1,4 @@
 //#region Importações
-import { ReadableByteStreamController } from "stream/web";
 import { Sala } from "../models/sala";
 import { ServiceSalaDAO } from "../services/sala.service";
 
@@ -38,9 +37,9 @@ module.exports = router;
 
 async function listarSalas(req: any, res: any) { 
     try{
-        const dao = new ServiceSalaDAO(mongoDB, "Sala");
-        let result = await dao.listAll();
-        res.send(result);
+        const dao = new ServiceSalaDAO(mongoDB, "Salas");
+        let resultado = await dao.listar();
+        res.send(resultado);
     }
     catch(ex){
         res.status(500).send(ex);
@@ -49,9 +48,9 @@ async function listarSalas(req: any, res: any) {
 
 async function obterSala(req: any, res: any) { 
     try{    
-        const dao = new ServiceSalaDAO(mongoDB,'Sala');
-        let result = await dao.getById(req.params._id ); 
-        res.send(result); 
+        const dao = new ServiceSalaDAO(mongoDB,"Salas");
+        let resultado = await dao.obterPeloId(req.params._id ); 
+        res.send(resultado); 
     }    
     catch(ex){
         res.status(500).send(ex);
@@ -60,9 +59,9 @@ async function obterSala(req: any, res: any) {
 
 async function listarSalasProfessor(req: any, res: any) { 
     try{
-        const dao = new ServiceSalaDAO(mongoDB, "Sala");
-        let result = await dao.listarSalasProfessor(req.params._id);
-        res.send(result);
+        const dao = new ServiceSalaDAO(mongoDB, "Salas");
+        let resultado = await dao.listarSalasProfessor(req.params._id);
+        res.send(resultado);
     }
     catch(ex){
         res.status(500).send(ex);
@@ -71,11 +70,11 @@ async function listarSalasProfessor(req: any, res: any) {
 
 async function listarSalasProfessorAluno(req: any, res: any) { 
     try{
-        const dao = new ServiceSalaDAO(mongoDB, "Sala");
-        let result = await dao.listarSalasProfessor(req.params.idProfessor);
+        const dao = new ServiceSalaDAO(mongoDB, "Salas");
+        let resultado = await dao.listarSalasProfessor(req.params.idProfessor);
         let salas = new Array;        
 
-        result.forEach((element: any) => {             
+        resultado.forEach((element: any) => {             
             if(element.alunos.find((e: any) => e._id == req.params.idAluno)){
                 salas.push(element)
             }            
@@ -90,10 +89,10 @@ async function listarSalasProfessorAluno(req: any, res: any) {
 
 async function listarAlunos(req: any, res: any) { 
     try{
-        const dao = new ServiceSalaDAO(mongoDB,'Sala');
-        let result = await dao.getById(req.params._id); 
+        const dao = new ServiceSalaDAO(mongoDB,"Salas");
+        let resultado = await dao.obterPeloId(req.params._id); 
         
-        let alunos = result.alunos;
+        let alunos = resultado.alunos;
         res.send(alunos); 
     }
     catch(ex){
@@ -103,10 +102,10 @@ async function listarAlunos(req: any, res: any) {
 
 async function obterMelhoresAlunos(req: any, res: any) { 
     try{
-        const dao = new ServiceSalaDAO(mongoDB,'Sala');
-        let result = await dao.getById(req.params._id); 
+        const dao = new ServiceSalaDAO(mongoDB,"Salas");
+        let resultado = await dao.obterPeloId(req.params._id); 
         
-        let alunos = result.alunos;
+        let alunos = resultado.alunos;
         let alunosOrdenados = alunos.sort((a, b) => (a.pontuacao < b.pontuacao) ? 1 : -1);
         let melhoresAlunos = alunosOrdenados.slice(0, 5);  
         res.send(melhoresAlunos); 
@@ -118,9 +117,9 @@ async function obterMelhoresAlunos(req: any, res: any) {
 
 async function validarCodigo(req: any, res: any) {
     try{
-        const dao = new ServiceSalaDAO(mongoDB,'Sala');
-        let result = await dao.getById(req.params.idSala); 
-        res.send(req.params.codigo == result.codigo); 
+        const dao = new ServiceSalaDAO(mongoDB,"Salas");
+        let resultado = await dao.obterPeloId(req.params.idSala); 
+        res.send(req.params.codigo == resultado.codigo); 
     }
     catch(ex){
         res.status(500).send(ex);
@@ -141,9 +140,9 @@ async function criar(req: any, res: any) {
         sala.alunos = [];
         sala.idProfessor = req.body.idProfessor;
 
-        const dao = new ServiceSalaDAO(mongoDB,'Sala');
-        let result = await dao.create(sala);  
-        res.send(result);
+        const dao = new ServiceSalaDAO(mongoDB,"Salas");
+        let resultado = await dao.criar(sala);  
+        res.send(resultado);
     }
     catch(ex){
         res.status(500).send(ex)
@@ -160,9 +159,9 @@ async function atualizar(req: any, res: any) {
         sala.descricao = req.body.descricao;
         sala.status = req.body.ativa;
         
-        const dao = new ServiceSalaDAO(mongoDB,'Sala');
-        let result = await dao.update(req.body._id, sala);  
-        res.send(result);
+        const dao = new ServiceSalaDAO(mongoDB,'Salas');
+        let resultado = await dao.atualizar(req.body._id, sala);  
+        res.send(resultado);
     }
     catch(ex){
         res.status(500).send(ex)
@@ -171,9 +170,9 @@ async function atualizar(req: any, res: any) {
 
 async function adicionarAluno(req: any, res: any){
     try{
-        const dao = new ServiceSalaDAO(mongoDB,'Sala');
-        let result = await dao.adicionarAluno(req.body.idSala, req.body.idAluno);  
-        res.send(result);
+        const dao = new ServiceSalaDAO(mongoDB,'Salas');
+        let resultado = await dao.adicionarAluno(req.body.idSala, req.body.idAluno);  
+        res.send(resultado);
     }
     catch(ex){
         res.status(500).send(ex)
@@ -185,9 +184,9 @@ async function adicionarAluno(req: any, res: any){
 
 async function deletar(req: any, res: any) {
     try{
-        const dao = new ServiceSalaDAO(mongoDB,'Sala');
-        let result = await dao.delete(req.params._id );
-        res.send(result);
+        const dao = new ServiceSalaDAO(mongoDB,'Salas');
+        let resultado = await dao.excluir(req.params._id );
+        res.send(resultado);
     }
     catch(ex){
         res.status(500).send(ex)

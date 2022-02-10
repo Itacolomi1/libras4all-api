@@ -8,4 +8,5 @@ export class Sala {
     tipoJogo: number;
     alunos: Array<Aluno>
     dataCriacao: Date;
+    idProfessor: string;
 }

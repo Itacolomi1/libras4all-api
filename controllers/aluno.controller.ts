@@ -1,23 +1,16 @@
 import { Aluno } from "../models/aluno";
 import { AlunoDAO } from "../services/aluno.service";
 
-
-
 var express = require('express');
 var router = express.Router();
 var mongoDB = require('config/database.ts');
 const ObjectID = mongoDB.ObjectID();
 mongoDB.connect();
 
-
-
 declare global{
     var conn: any;
     var collection: any;
 }
-
-
-
 
 // routes
 router.get('/listar', listar);
