@@ -1,6 +1,9 @@
 //#region Importações
 import { Usuario } from "../models/usuario";
 import { UsuarioDAO } from "../services/usuario.service";
+import { ServiceSalaDAO } from "../services/sala.service";
+import { Hash } from "crypto";
+
 
 var hash = require('object-hash');
 var express = require('express');
@@ -20,6 +23,7 @@ declare global{
 router.get('/', listar);
 router.get('/:_id', obterUsuario);
 router.get('/obterNivel/:_id', obterNivel);
+router.get('/obterAlunosPorProfessor/:_id', obterAlunosPorProfessor);
 router.post('/', criar);
 router.post('/login', login);
 router.put('/', atualizar);
@@ -65,6 +69,23 @@ async function obterNivel(req: any,res:any) {
     }
 }
 
+async function obterAlunosPorProfessor(req: any, res: any) { 
+    try{
+        const dao = new ServiceSalaDAO(mongoDB, "Salas");
+        let resultado = await dao.listarSalasProfessor(req.params._id);
+        let alunosFiltrado = new Set();        
+
+        resultado.forEach((x: any) => {  
+            x.alunos.forEach((y: any) => {             
+                alunosFiltrado.add(y._id);           
+            });           
+        });
+        res.send(Array.from(alunosFiltrado.values()));
+    }
+    catch(ex){
+        res.status(500).send(ex);
+    }   
+}
 
 //#endregion
 
