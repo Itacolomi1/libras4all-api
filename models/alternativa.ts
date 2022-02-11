@@ -1,4 +1,4 @@
 export class Alternativa {
     descricao: string;
-    isRight: boolean;
+    perguntaCorreta: boolean;
 }
