@@ -24,6 +24,8 @@ router.get('/listarAlunos/:_id', listarAlunos);
 router.get('/obterMelhoresAlunos/:_id', obterMelhoresAlunos);
 router.get('/listarSalasProfessorAluno/:idProfessor/:idAluno', listarSalasProfessorAluno);
 router.get('/validarCodigo/:idSala/:codigo', validarCodigo);
+router.get('/listarSalasAluno/:_id', listarSalasAluno);
+router.get('/obterPontuacao/:idSala/:idAluno', obterPontuacao);
 router.post('/', criar);
 router.put('/', atualizar);
 router.put('/adicionarAluno', adicionarAluno);
@@ -87,6 +89,25 @@ async function listarSalasProfessorAluno(req: any, res: any) {
     }   
 }
 
+async function listarSalasAluno(req: any, res: any) { 
+    try{
+        const dao = new ServiceSalaDAO(mongoDB, "Salas");
+        let resultado = await dao.listar();
+        let salas = new Array;        
+
+        resultado.forEach((element: any) => {             
+            if(element.alunos.find((e: any) => e._id == req.params._id)){
+                salas.push(element)
+            }            
+        });
+
+        res.send(salas);
+    }
+    catch(ex){
+        res.status(500).send(ex);
+    }  
+}
+
 async function listarAlunos(req: any, res: any) { 
     try{
         const dao = new ServiceSalaDAO(mongoDB,"Salas");
@@ -123,6 +144,24 @@ async function validarCodigo(req: any, res: any) {
     }
     catch(ex){
         res.status(500).send(ex);
+    }    
+}
+
+async function obterPontuacao(req: any, res: any) {
+    try{
+        const dao = new ServiceSalaDAO(mongoDB, "Salas");
+        let resultado = await dao.obterPeloId(req.params.idSala); 
+        let aluno = new Array;
+        resultado.alunos.forEach((element: any) => {      
+            if((element._id == req.params.idAluno)){
+                aluno.push(element)
+            }            
+        });
+
+        res.send(aluno); 
+    }
+    catch(ex){
+        res.status(500).send(ex.message);
     }    
 }
 //#endregion
