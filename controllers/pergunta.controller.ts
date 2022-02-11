@@ -19,7 +19,9 @@ declare global{
 
 //#region Rotas
 router.get('/:_id', obterPergunta);
+router.get('/obterPerguntasPorClasse/:classe', obterPerguntasPorClasse);
 router.post('/', novaPergunta)
+router.post('/obterPerguntasEmLote', obterPerguntasEmLote);
 
 module.exports = router;
 //#endregion
@@ -29,6 +31,12 @@ module.exports = router;
 async function obterPergunta(req: any, res: any) {
     const dao = new PerguntasDAO(mongoDB,'Perguntas'); 
     let result = await dao.obterPeloId(req.params._id);  
+    res.send(result);
+}
+
+async function obterPerguntasPorClasse(req: any, res: any) {
+    const dao = new PerguntasDAO(mongoDB,'Perguntas');  
+    let result = await dao.obterPerguntasPorClasse(req.params.classe);   
     res.send(result);
 }
 
@@ -42,6 +50,12 @@ async function novaPergunta(req: any, res: any) {
     pergunta.classe = req.body.classe;
     pergunta.alternativas = criarAlternativas(req.body.alternativas);      
     let result = await dao.criar(pergunta);    
+    res.send(result);
+}
+
+async function obterPerguntasEmLote(req: any, res: any) {
+    const dao = new PerguntasDAO(mongoDB,'Perguntas');
+    let result = await dao.obterPerguntasEmLote(req.body);
     res.send(result);
 }
 //#endregion
