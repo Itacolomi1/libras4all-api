@@ -50,6 +50,8 @@ async function obterProfessor(req: any, res: any) {
     res.status(500).send(ex);
   }   
 }
+
+
 //#endregion
 
 //#region Requisições POST
