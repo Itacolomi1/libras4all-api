@@ -20,9 +20,8 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.json());
 app.use('/api/usuario',require('./controllers/usuario.controller'));
-app.use('/api/teste',require('./controllers/sala.controller'));
 app.use('/api/jogo', require('./controllers/jogo.controller'));
-app.use('/api/perguntas', require('./controllers/pergunta.controller'));
+app.use('/api/pergunta', require('./controllers/pergunta.controller'));
 app.use('/api/sala',require('./controllers/sala.controller'));
 app.use('/api/professor',require('./controllers/professor.controller'));
 
