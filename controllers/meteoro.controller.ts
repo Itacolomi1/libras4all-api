@@ -78,9 +78,13 @@ async function obterMeteoro(req: any, res: any) {
 async function criar(req: any, res: any) {
     try{
         const dao = new MeteoroDAO(mongoDB, "Meteoro");
-        let meteoro = new Meteoro();   
+        let meteoro = new Meteoro();  
+        let alternativas = []; 
         meteoro.idSala = req.body.idSala;
-        meteoro.sinaisMeteoro = await obterSinais();
+
+        alternativas = await obterSinais();
+        meteoro.sinaisMeteoro = alternativas.slice(0, 3);
+        meteoro.alternativas = alternativas;
         let resultado = await dao.criar(meteoro);
         res.send(resultado);
     }
