@@ -17,6 +17,29 @@ export class PerguntasDAO extends BaseDao<Perguntas> {
         return deferred.promise;
     }
 
+    obterPerguntasAleatorias(element: any) {
+        var deferred = this.Q.defer();
+        var idPerguntas = new Array();
+
+        this._collection.aggregate([
+            { $match: { classe: element.classe } },
+            { $sample: { size: element.quantidade} }
+        ]).toArray(function (err: any, objeto: any) {
+            if (err) deferred.reject(err.name + ': ' + err.message);
+            if (objeto) {
+                objeto.forEach((element: any) => { 
+                    var x = element._id
+                    idPerguntas.push(x);           
+                });
+                deferred.resolve(idPerguntas);   
+            }          
+             else {
+                deferred.resolve();
+            }
+        });
+        return deferred.promise;
+    }
+
     obterPerguntasEmLote(perguntasQuiz: any) {
         var deferred = this.Q.defer();
         let perguntasQuizDAO: Array<PerguntasQuiz> = [];
