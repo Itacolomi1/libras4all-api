@@ -24,6 +24,7 @@ app.use('/api/quiz', require('./controllers/quiz.controller'));
 app.use('/api/pergunta', require('./controllers/pergunta.controller'));
 app.use('/api/sala',require('./controllers/sala.controller'));
 app.use('/api/professor',require('./controllers/professor.controller'));
+app.use('/api/meteoro',require('./controllers/meteoro.controller'));
 
 app.listen(PORT, ()=>{
     console.log(`Listening on port ${PORT}`);

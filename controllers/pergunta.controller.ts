@@ -20,6 +20,7 @@ declare global{
 //#region Rotas
 router.get('/:_id', obterPergunta);
 router.get('/obterPerguntasPorClasse/:classe', obterPerguntasPorClasse);
+router.get('/obterQuantidade/:classe', obterQuantidade);
 router.post('/', novaPergunta)
 router.post('/obterPerguntasEmLote', obterPerguntasEmLote);
 
@@ -30,14 +31,24 @@ module.exports = router;
 
 async function obterPergunta(req: any, res: any) {
     const dao = new PerguntasDAO(mongoDB,'Perguntas'); 
-    let result = await dao.obterPeloId(req.params._id);  
-    res.send(result);
+    let resultado = await dao.obterPeloId(req.params._id);  
+    res.send(resultado);
+}
+
+async function obterQuantidade(req: any, res: any) {
+    const dao = new PerguntasDAO(mongoDB,'Perguntas'); 
+    let resultado = await dao.obterPerguntasPorClasse(req.params.classe);  
+    var quantidade = 0;
+    resultado.forEach(() => {
+        quantidade++;
+    });
+    res.send({quantidade});
 }
 
 async function obterPerguntasPorClasse(req: any, res: any) {
     const dao = new PerguntasDAO(mongoDB,'Perguntas');  
-    let result = await dao.obterPerguntasPorClasse(req.params.classe);   
-    res.send(result);
+    let resultado = await dao.obterPerguntasPorClasse(req.params.classe);   
+    res.send(resultado);
 }
 
 //#endregion
@@ -49,14 +60,14 @@ async function novaPergunta(req: any, res: any) {
     pergunta.descricao = req.body.descricao;
     pergunta.classe = req.body.classe;
     pergunta.alternativas = criarAlternativas(req.body.alternativas);      
-    let result = await dao.criar(pergunta);    
-    res.send(result);
+    let resultado = await dao.criar(pergunta);    
+    res.send(resultado);
 }
 
 async function obterPerguntasEmLote(req: any, res: any) {
     const dao = new PerguntasDAO(mongoDB,'Perguntas');
-    let result = await dao.obterPerguntasEmLote(req.body);
-    res.send(result);
+    let resultado = await dao.obterPerguntasEmLote(req.body);
+    res.send(resultado);
 }
 //#endregion
 
