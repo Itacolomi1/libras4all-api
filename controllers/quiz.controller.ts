@@ -19,6 +19,7 @@ declare global{
 //#endregion
 
 //#region Rotas
+router.get('/:_id', obterQuiz);
 router.get('/obterQuizPorSala/:idSala', obterQuizPorSala);
 router.post('/', criar);
 
@@ -27,6 +28,16 @@ module.exports = router;
 //#endregion
 
 //#region Requisições GET
+async function obterQuiz(req: any, res: any) { 
+    try{
+        const dao = new QuizDAO(mongoDB, "Quiz");
+        let resultado = await dao.obterPeloId(req.params._id);
+        res.send(resultado);
+    }
+    catch(ex){
+        res.status(500).send(ex);
+    }  
+}
 
 async function obterQuizPorSala(req: any, res: any) { 
     try{
@@ -48,6 +59,7 @@ async function criar(req: any, res: any) {
         let quiz = new Quiz();   
         quiz.idSala = req.body.idSala;
         quiz.perguntas = await obterPerguntas(req.body.perguntas);
+        console.log(quiz)
         let resultado = await dao.criar(quiz);
         res.send(resultado);
     }
