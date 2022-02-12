@@ -26,7 +26,7 @@ export class MeteoroDAO extends BaseDao<Meteoro>{
         var idSinais = new Array();
 
         this._collection.aggregate([
-            { $sample: { size: 3} }
+            { $sample: { size: 5} }
         ]).toArray(function (err: any, objeto: any) {
             if (err) deferred.reject(err.name + ': ' + err.message);
             if (objeto) {

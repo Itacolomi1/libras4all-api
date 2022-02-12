@@ -19,6 +19,8 @@ declare global{
 router.get('/', listarMeteoros);
 router.get('/:_id', obterMeteoro);
 router.get('/obterMeteoroPorSala/:idSala', obterMeteoroPorSala);
+router.get('/obterSinalMeteoro/:_id', obterSinalMeteoro);
+
 router.post('/', criar);
 
 module.exports = router;
@@ -37,9 +39,9 @@ async function listarMeteoros(req: any, res: any) {
     }  
 }
 
-async function obterMeteoro(req: any, res: any) { 
+async function obterSinalMeteoro(req: any, res: any) { 
     try{
-        const dao = new MeteoroDAO(mongoDB, "Meteoro");
+        const dao = new MeteoroDAO(mongoDB, "Sinais_Meteoro");
         let resultado = await dao.obterPeloId(req.params._id);
         res.send(resultado);
     }
@@ -52,6 +54,17 @@ async function obterMeteoroPorSala(req: any, res: any) {
     try{
         const dao = new MeteoroDAO(mongoDB, "Meteoro");
         let resultado = await dao.obterMeteoroPorSala(req.params.idSala);
+        res.send(resultado);
+    }
+    catch(ex){
+        res.status(500).send(ex);
+    }  
+}
+
+async function obterMeteoro(req: any, res: any) { 
+    try{
+        const dao = new MeteoroDAO(mongoDB, "Meteoro");
+        let resultado = await dao.obterPeloId(req.params._id);
         res.send(resultado);
     }
     catch(ex){
