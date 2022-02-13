@@ -1,6 +1,7 @@
 //#region Importações
 import { Sala } from "../models/sala";
 import { ServiceSalaDAO } from "../services/sala.service";
+import autenticacao from "../middleware/autenticacao"
 
 var express = require('express');
 var router = express.Router();
@@ -17,19 +18,19 @@ declare global{
 
 //#region Rotas
 
-router.get('/', listarSalas);
-router.get('/:_id', obterSala);
-router.get('/listarSalasProfessor/:_id', listarSalasProfessor);
-router.get('/listarAlunos/:_id', listarAlunos);
-router.get('/obterMelhoresAlunos/:_id', obterMelhoresAlunos);
-router.get('/listarSalasProfessorAluno/:idProfessor/:idAluno', listarSalasProfessorAluno);
-router.get('/validarCodigo/:idSala/:codigo', validarCodigo);
-router.get('/listarSalasAluno/:_id', listarSalasAluno);
-router.get('/obterPontuacao/:idSala/:idAluno', obterPontuacao);
-router.post('/', criar);
-router.put('/', atualizar);
-router.put('/adicionarAluno', adicionarAluno);
-router.delete('/:_id', deletar);
+router.get('/', autenticacao, listarSalas);
+router.get('/:_id', autenticacao, obterSala);
+router.get('/listarSalasProfessor/:_id', autenticacao, listarSalasProfessor);
+router.get('/listarAlunos/:_id', autenticacao, listarAlunos);
+router.get('/obterMelhoresAlunos/:_id', autenticacao, obterMelhoresAlunos);
+router.get('/listarSalasProfessorAluno/:idProfessor/:idAluno', autenticacao, listarSalasProfessorAluno);
+router.get('/validarCodigo/:idSala/:codigo', autenticacao, validarCodigo);
+router.get('/listarSalasAluno/:_id', autenticacao, listarSalasAluno);
+router.get('/obterPontuacao/:idSala/:idAluno', autenticacao, obterPontuacao);
+router.post('/', autenticacao, criar);
+router.put('/', autenticacao, atualizar);
+router.put('/adicionarAluno', autenticacao, adicionarAluno);
+router.delete('/:_id', autenticacao, deletar);
 
 module.exports = router;
 

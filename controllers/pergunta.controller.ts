@@ -3,6 +3,7 @@
 import { Perguntas } from "../models/perguntas";
 import { PerguntasDAO } from "../services/perguntas.service";
 import { Alternativa } from "../models/alternativa";
+import autenticacao from "../middleware/autenticacao";
 
 var express = require('express');
 var router = express.Router();
@@ -18,11 +19,11 @@ declare global{
 //#endregion
 
 //#region Rotas
-router.get('/:_id', obterPergunta);
-router.get('/obterPerguntasPorClasse/:classe', obterPerguntasPorClasse);
-router.get('/obterQuantidade/:classe', obterQuantidade);
-router.post('/', novaPergunta)
-router.post('/obterPerguntasEmLote', obterPerguntasEmLote);
+router.get('/:_id', autenticacao, obterPergunta);
+router.get('/obterPerguntasPorClasse/:classe', autenticacao, obterPerguntasPorClasse);
+router.get('/obterQuantidade/:classe', autenticacao, obterQuantidade);
+router.post('/', autenticacao, novaPergunta)
+router.post('/obterPerguntasEmLote', autenticacao, obterPerguntasEmLote);
 
 module.exports = router;
 //#endregion
