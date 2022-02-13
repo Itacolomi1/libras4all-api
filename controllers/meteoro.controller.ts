@@ -1,6 +1,8 @@
 //#region Importações
 import { Meteoro } from "../models/meteoro";
 import { MeteoroDAO } from "../services/meteoro.service";
+import autenticacao from "../middleware/autenticacao";
+
 
 var express = require('express');
 var router = express.Router();
@@ -16,10 +18,10 @@ declare global{
 //#endregion
 
 //#region Rotas
-router.get('/', listarMeteoros);
-router.get('/:_id', obterMeteoro);
-router.get('/obterMeteoroPorSala/:idSala', obterMeteoroPorSala);
-router.get('/obterSinalMeteoro/:_id', obterSinalMeteoro);
+router.get('/', autenticacao, listarMeteoros);
+router.get('/:_id', autenticacao, obterMeteoro);
+router.get('/obterMeteoroPorSala/:idSala', autenticacao, obterMeteoroPorSala);
+router.get('/obterSinalMeteoro/:_id', autenticacao, obterSinalMeteoro);
 
 router.post('/', criar);
 

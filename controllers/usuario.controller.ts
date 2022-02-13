@@ -2,12 +2,12 @@
 import { Usuario } from "../models/usuario";
 import { UsuarioDAO } from "../services/usuario.service";
 import { ServiceSalaDAO } from "../services/sala.service";
-import { Hash } from "crypto";
-
+import autenticacao from "../middleware/autenticacao";
 
 var hash = require('object-hash');
 var express = require('express');
 var router = express.Router();
+
 var mongoDB = require('config/database.ts');
 mongoDB.connect();
 
@@ -20,14 +20,16 @@ declare global{
 
 //#region Rotas
 
-router.get('/', listar);
-router.get('/:_id', obterUsuario);
-router.get('/obterNivel/:_id', obterNivel);
-router.get('/obterAlunosPorProfessor/:_id', obterAlunosPorProfessor);
+router.get('/', autenticacao, listar);
+router.get('/:_id', autenticacao, obterUsuario);
+router.get('/obterNivel/:_id', autenticacao, obterNivel);
+router.get('/obterNivel/:_id', autenticacao, obterNivel);
+router.get('/ranking/geral', autenticacao, rankingGeral);
+router.get('/obterAlunosPorProfessor/:_id', autenticacao, obterAlunosPorProfessor);
 router.post('/', criar);
 router.post('/login', login);
-router.put('/', atualizar);
-router.delete('/:_id', deletar);
+router.put('/', autenticacao, atualizar);
+router.delete('/:_id', autenticacao, deletar);
 
 module.exports = router;
 
@@ -42,7 +44,7 @@ async function listar(req: any, res: any) {
         res.send(resultado);
     }
     catch(ex){
-        res.status(500).send(ex);
+        res.status(500).send(ex.message);
     } 
 }
 
@@ -53,19 +55,51 @@ async function obterUsuario(req: any, res: any) {
         res.send(resultado);
     }
     catch(ex){
-      res.status(500).send(ex);
+      res.status(500).send(ex.message);
     }    
 }
 
-async function obterNivel(req: any,res:any) {
+async function rankingGeral(req: any, res: any) { 
+    try{
+        const dao = new UsuarioDAO(mongoDB,"Usuarios");
+        let resultado = await dao.listar(); 
+        let alunosOrdenados = resultado.sort((a, b) => (a.libracoins < b.libracoins) ? 1 : -1);
+        let melhoresAlunos = alunosOrdenados.slice(0, 5);  
+        res.send(melhoresAlunos); 
+    }
+    catch(ex){
+        res.status(500).send(ex.message);
+    }  
+}
+
+
+async function obterNivel(req: any, res:any) {
     try{
         const idUsuario = req.params._id;
         const dao = new UsuarioDAO(mongoDB, "Usuarios");
-        let result = await (await dao.obterPeloId(idUsuario)).nivel;
-        res.send(result);
+        let resultado = await (await dao.obterPeloId(idUsuario)).libracoins;
+        let nivel = '';
+        
+        if(resultado < 50){
+            nivel = 'Latão';
+        }
+        else if(resultado < 100){
+            nivel = 'Prata';
+        }
+        else if(resultado < 200){
+            nivel = 'Ouro';
+        }
+        else if(resultado < 300){
+            nivel = 'Âmbar';
+        }
+        else {
+            nivel = 'Platina';
+        }
+
+        res.send(nivel);
     }
     catch(ex){
-        res.status(500).send(ex);
+        res.status(500).send(ex.message);
     }
 }
 
@@ -83,7 +117,7 @@ async function obterAlunosPorProfessor(req: any, res: any) {
         res.send(Array.from(alunosFiltrado.values()));
     }
     catch(ex){
-        res.status(500).send(ex);
+        res.status(500).send(ex.message);
     }   
 }
 
@@ -99,7 +133,6 @@ async function criar(req: any, res: any) {
             usuario.nome = req.body.nome;
             usuario.email = req.body.email;
             usuario.senha = hash(req.body.senha);
-            usuario.nivel = "Latão";
             usuario.libracoins = 10;
 
             const dao = new UsuarioDAO(mongoDB,'Usuarios');
@@ -124,7 +157,7 @@ async function login(req: any, res: any) {
         res.send(resultado);
     }
     catch(ex){
-        res.status(500).send(ex);
+        res.status(500).send(ex.message);
     }
 }
 
@@ -144,7 +177,7 @@ async function atualizar(req: any, res: any) {
         res.send(resultado);
     }
     catch(ex){
-        res.status(500).send(ex);
+        res.status(500).send(ex.message);
     } 
 }
 
@@ -159,7 +192,7 @@ async function deletar(req: any, res: any) {
         res.send(resultado);
     }
     catch(ex){
-        res.status(500).send(ex);
+        res.status(500).send(ex.message);
     }  
 }
 //#endregion

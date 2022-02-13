@@ -4,6 +4,7 @@ import e from "express";
 import { Quiz } from "../models/quiz";
 import { PerguntasDAO } from "../services/perguntas.service";
 import { QuizDAO } from "../services/quiz.service";
+import autenticacao from "../middleware/autenticacao";
 
 var express = require('express');
 var router = express.Router();
@@ -19,9 +20,9 @@ declare global{
 //#endregion
 
 //#region Rotas
-router.get('/:_id', obterQuiz);
-router.get('/obterQuizPorSala/:idSala', obterQuizPorSala);
-router.post('/', criar);
+router.get('/:_id', autenticacao, obterQuiz);
+router.get('/obterQuizPorSala/:idSala', autenticacao, obterQuizPorSala);
+router.post('/', autenticacao, criar);
 
 module.exports = router;
 
