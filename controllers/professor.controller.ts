@@ -1,6 +1,7 @@
 //#region Importações
 import { Professor } from "../models/professor";
 import { ProfessorDAO } from "../services/professor.service";
+import autenticacao from "../middleware/autenticacao";
 
 var hash = require('object-hash');
 var express = require('express');
@@ -16,12 +17,12 @@ declare global{
 
 //#region Rotas
 
-router.get('/', listar);
-router.get('/:_id', obterProfessor);
+router.get('/', autenticacao, listar);
+router.get('/:_id', autenticacao, obterProfessor);
 router.post('/', criar);
 router.post('/login', login)
-router.put('/', atualizar);
-router.delete('/:_id', deletar);
+router.put('/', autenticacao, atualizar);
+router.delete('/:_id', autenticacao, deletar);
 
 module.exports = router;
 
