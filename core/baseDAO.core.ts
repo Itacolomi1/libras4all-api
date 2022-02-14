@@ -64,7 +64,7 @@ export abstract class BaseDao<T> implements IBaseDAO<T> {
         
         this._collection.findOne({ _id: new this._objectID.createFromHexString(_id) }, function (err: any, obj: any) {
             if (err) deferred.reject(err.name + ': ' + err.message);
-            if (obj) {                                                      
+            if (obj) {                 
                 deferred.resolve(obj);
             } else {
                 deferred.resolve();
@@ -120,4 +120,19 @@ export abstract class BaseDao<T> implements IBaseDAO<T> {
         });  
         return deferred.promise;
     }
+
+    obterPeloItem(idSala: any) {
+        var deferred = this.Q.defer();
+        this._collection.findOne({ idSala: idSala }, function (err: any, obj: any) {
+            if (err) deferred.reject(err.name + ': ' + err.message);
+            if (obj) {                                                
+                deferred.resolve(obj);
+            } else {
+                deferred.resolve();
+            }
+        });  
+        return deferred.promise;
+    }    
+
+
 }
