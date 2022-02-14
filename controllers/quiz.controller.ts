@@ -1,6 +1,4 @@
 //#region Importações
-
-import e from "express";
 import { Quiz } from "../models/quiz";
 import { PerguntasDAO } from "../services/perguntas.service";
 import { QuizDAO } from "../services/quiz.service";
@@ -60,7 +58,6 @@ async function criar(req: any, res: any) {
         let quiz = new Quiz();   
         quiz.idSala = req.body.idSala;
         quiz.perguntas = await obterPerguntas(req.body.perguntas);
-        console.log(quiz)
         let resultado = await dao.criar(quiz);
         res.send(resultado);
     }
