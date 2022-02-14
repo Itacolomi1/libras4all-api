@@ -14,5 +14,5 @@ export class QuizDAO extends BaseDao<Quiz> {
             }
         });
         return deferred.promise;
-    }    
+    }  
 }

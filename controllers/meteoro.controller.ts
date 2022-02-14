@@ -22,8 +22,7 @@ router.get('/', autenticacao, listarMeteoros);
 router.get('/:_id', autenticacao, obterMeteoro);
 router.get('/obterMeteoroPorSala/:idSala', autenticacao, obterMeteoroPorSala);
 router.get('/obterSinalMeteoro/:_id', autenticacao, obterSinalMeteoro);
-
-router.post('/', criar);
+router.post('/', autenticacao, criar);
 
 module.exports = router;
 
@@ -85,7 +84,7 @@ async function criar(req: any, res: any) {
         meteoro.idSala = req.body.idSala;
 
         alternativas = await obterSinais();
-        meteoro.sinaisMeteoro = alternativas.slice(0, 3);
+        meteoro.sinais = alternativas.slice(0, 3);
         meteoro.alternativas = alternativas;
         let resultado = await dao.criar(meteoro);
         res.send(resultado);

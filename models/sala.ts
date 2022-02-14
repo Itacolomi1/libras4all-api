@@ -5,7 +5,7 @@ export class Sala {
     codigo: number;
     descricao: string;
     status: boolean;
-    tipoJogo: number;
+    tipoJogo: string;
     alunos: Array<Aluno>
     dataCriacao: Date;
     idProfessor: string;
