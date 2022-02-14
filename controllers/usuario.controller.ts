@@ -162,7 +162,6 @@ async function login(req: any, res: any) {
     }
 }
 
-
 //#endregion
 
 //#region Requisições PUT
