@@ -1,4 +1,4 @@
-export class Alternativa {
+export class Aluno {
     _id: string;
     pontuacao: number;
 }

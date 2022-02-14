@@ -29,6 +29,7 @@ router.get('/obterAlunosPorProfessor/:_id', autenticacao, obterAlunosPorProfesso
 router.post('/', criar);
 router.post('/login', login);
 router.put('/', autenticacao, atualizar);
+router.put('/atualizarPontuacao', autenticacao, atualizarPontuacao);
 router.delete('/:_id', autenticacao, deletar);
 
 module.exports = router;
@@ -180,6 +181,21 @@ async function atualizar(req: any, res: any) {
         res.status(500).send(ex.message);
     } 
 }
+
+async function atualizarPontuacao(req: any, res: any) {
+    try{    
+        const dao = new UsuarioDAO(mongoDB,'Usuarios');
+        let libracoinsPorAcerto = 10;
+        let usuario = await dao.obterPeloId(req.body._id); 
+        usuario.libracoins = usuario.libracoins + libracoinsPorAcerto;
+        let resultado = await dao.atualizar(req.body._id, usuario);  
+        res.send(resultado);
+    }
+    catch(ex){
+        res.status(500).send(ex.message);
+    } 
+}
+
 
 //#endregion
 
