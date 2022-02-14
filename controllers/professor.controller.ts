@@ -52,7 +52,6 @@ async function obterProfessor(req: any, res: any) {
   }   
 }
 
-
 //#endregion
 
 //#region Requisições POST

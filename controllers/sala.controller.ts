@@ -27,6 +27,7 @@ router.get('/listarSalasProfessorAluno/:idProfessor/:idAluno', autenticacao, lis
 router.get('/validarCodigo/:idSala/:codigo', autenticacao, validarCodigo);
 router.get('/listarSalasAluno/:_id', autenticacao, listarSalasAluno);
 router.get('/obterPontuacao/:idSala/:idAluno', autenticacao, obterPontuacao);
+router.get('/obterAlunosPorProfessor/:idProfessor', autenticacao, obterAlunosPorProfessor);
 router.post('/', autenticacao, criar);
 router.put('/', autenticacao, atualizar);
 router.put('/adicionarAluno', autenticacao, adicionarAluno);
@@ -59,6 +60,23 @@ async function obterSala(req: any, res: any) {
         res.status(500).send(ex);
     }  
 }
+
+async function obterAlunosPorProfessor(req: any, res: any) { 
+    try {   
+        const dao = new ServiceSalaDAO(mongoDB,'Salas');    
+        let resultado = await dao.listarSalasProfessor(req.params.idProfessor);
+        let alunos = new Set();  
+        await Promise.all(resultado.map(async (dado: any) => {           
+            await Promise.all(dado.alunos.map(async (element: any) => {
+            alunos.add(element._id)
+            })); 
+        }));
+        res.send(Array.from(alunos.values()));
+    } 
+    catch(ex){
+      res.status(500).send(ex.message);
+    }   
+  }
 
 async function listarSalasProfessor(req: any, res: any) { 
     try{
