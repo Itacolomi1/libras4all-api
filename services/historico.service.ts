@@ -24,6 +24,23 @@ export class HistoricoDAO extends BaseDao<Historico>{
         });
         return deferred.promise;
     }
+
+    obterPorcentagemPorAluno(idSala: string, idUsuario: string) {
+        var deferred = this.Q.defer();
+        this._collection.find({ $and: [
+            {'idSala': idSala},
+            {'idUsuario': idUsuario}
+        ]})
+        .toArray(function (err: any, objeto: any) {
+            if (err) deferred.reject(err.name + ': ' + err.message);
+            if (objeto) {
+                deferred.resolve(objeto);
+            } else {
+                deferred.resolve();
+            }
+        });
+        return deferred.promise;
+    }
 }
 
 
