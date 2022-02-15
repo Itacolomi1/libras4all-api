@@ -4,6 +4,6 @@ export class Perguntas {
     descricao: string;
     classe: string;
     idProfessor: string;
-    imagem: any;
+    caminhoImagem: string;
     alternativas: Array<Alternativa>
 }

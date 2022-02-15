@@ -60,6 +60,7 @@ async function novaPergunta(req: any, res: any) {
     let pergunta = new Perguntas();
     pergunta.descricao = req.body.descricao;
     pergunta.classe = req.body.classe;
+    pergunta.caminhoImagem = req.body.caminhoImagem;
     pergunta.idProfessor = req.body.idProfessor;
     pergunta.alternativas = criarAlternativas(req.body.alternativas);      
     let resultado = await dao.criar(pergunta);    
