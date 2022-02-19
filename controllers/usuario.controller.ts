@@ -155,7 +155,12 @@ async function login(req: any, res: any) {
         var senhaHash = hash(req.body.senha);
     
         let resultado = await dao.autenticar(req.body.email, senhaHash);  
-        res.send(resultado);
+        if(resultado.token == undefined){
+            res.status(400).send(resultado.erro);
+        }
+        else{
+            res.send(resultado);
+        }
     }
     catch(ex){
         res.status(500).send(ex.message);

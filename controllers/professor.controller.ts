@@ -82,12 +82,17 @@ async function login(req: any, res: any) {
   try{
     const dao = new ProfessorDAO(mongoDB, "Professores");
     var senhaHash = hash(req.body.senha);
-
     let resultado = await dao.autenticar(req.body.email, senhaHash);  
-    res.send(resultado);
+    
+    if(resultado.token == undefined){
+      res.status(400).send(resultado.erro);
+    }
+    else{
+      res.send(resultado);
+    }
   }
   catch(ex){
-    res.status(500).send(ex);
+    res.status(500).send(ex.message);
   }
 }
 //#endregion
