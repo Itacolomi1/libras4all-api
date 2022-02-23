@@ -214,7 +214,6 @@ async function criar(req: any, res: any) {
 async function atualizar(req: any, res: any) {
     try{
         let sala = new Sala(); 
-        sala.descricao = req.body.descricao;
         sala.status = req.body.ativa;
         
         const dao = new ServiceSalaDAO(mongoDB,'Salas');
