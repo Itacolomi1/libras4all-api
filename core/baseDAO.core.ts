@@ -17,11 +17,14 @@ export abstract class BaseDao<T> implements IBaseDAO<T> {
         var deferred = this.Q.defer();        
         this._collection.insertOne(
             item,
-                function (err: any, doc: any) {
-                    if (err) deferred.reject(err.name + ': ' + err.message);
-    
+            function (err: any, obj: any) {
+                if (err) deferred.reject(err.name + ': ' + err.message);
+                if (obj) {                 
+                    deferred.resolve(obj.ops);
+                } else {
                     deferred.resolve();
-                }); 
+                }
+            });
         return deferred.promise;
     }
 
