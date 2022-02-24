@@ -1,6 +1,7 @@
 //#region Importações
 import { Sala } from "../models/sala";
 import { ServiceSalaDAO } from "../services/sala.service";
+import { HistoricoDAO } from "../services/historico.service";
 import autenticacao from "../middleware/autenticacao"
 
 var express = require('express');
@@ -242,6 +243,8 @@ async function adicionarAluno(req: any, res: any){
 async function deletar(req: any, res: any) {
     try{
         const dao = new ServiceSalaDAO(mongoDB,'Salas');
+        const daoHistorico = new HistoricoDAO(mongoDB, "Historico");
+
         let resultado = await dao.excluir(req.params._id );
         res.send(resultado);
     }
