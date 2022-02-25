@@ -25,7 +25,7 @@ router.get('/listarSalasProfessor/:_id', autenticacao, listarSalasProfessor);
 router.get('/listarAlunos/:_id', autenticacao, listarAlunos);
 router.get('/obterMelhoresAlunos/:_id', autenticacao, obterMelhoresAlunos);
 router.get('/listarSalasProfessorAluno/:idProfessor/:idAluno', autenticacao, listarSalasProfessorAluno);
-router.get('/validarCodigo/:idSala/:codigo', autenticacao, validarCodigo);
+router.get('/validarCodigo/:codigo', autenticacao, validarCodigo);
 router.get('/listarSalasAluno/:_id', autenticacao, listarSalasAluno);
 router.get('/obterPontuacao/:idSala/:idAluno', autenticacao, obterPontuacao);
 router.get('/obterAlunosPorProfessor/:idProfessor', autenticacao, obterAlunosPorProfessor);
@@ -159,8 +159,8 @@ async function obterMelhoresAlunos(req: any, res: any) {
 async function validarCodigo(req: any, res: any) {
     try{
         const dao = new ServiceSalaDAO(mongoDB,"Salas");
-        let resultado = await dao.obterPeloId(req.params.idSala); 
-        res.send(req.params.codigo == resultado.codigo); 
+        let resultado = await dao.obterPeloCodigo(req.params.codigo); 
+        res.send(resultado); 
     }
     catch(ex){
         res.status(500).send(ex);
