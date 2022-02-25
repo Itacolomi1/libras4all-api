@@ -22,6 +22,7 @@ declare global{
 router.get('/:_id', autenticacao, obterPergunta);
 router.get('/obterPerguntasPorClasse/:classe', autenticacao, obterPerguntasPorClasse);
 router.get('/obterQuantidade/:classe', autenticacao, obterQuantidade);
+router.get('/obterQuantidadeCustomizada/:_id', autenticacao, obterQuantidadeCustomizada);
 router.post('/', autenticacao, novaPergunta)
 router.post('/obterPerguntasEmLote', autenticacao, obterPerguntasEmLote);
 
@@ -39,6 +40,16 @@ async function obterPergunta(req: any, res: any) {
 async function obterQuantidade(req: any, res: any) {
     const dao = new PerguntasDAO(mongoDB,'Perguntas'); 
     let resultado = await dao.obterPerguntasPorClasse(req.params.classe);  
+    var quantidade = 0;
+    resultado.forEach(() => {
+        quantidade++;
+    });
+    res.send({quantidade});
+}
+
+async function obterQuantidadeCustomizada(req: any, res: any) {
+    const dao = new PerguntasDAO(mongoDB,'Perguntas'); 
+    let resultado = await dao.obterPerguntasPorProfessor(req.params._id);  
     var quantidade = 0;
     resultado.forEach(() => {
         quantidade++;
