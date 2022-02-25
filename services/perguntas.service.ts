@@ -20,10 +20,11 @@ export class PerguntasDAO extends BaseDao<Perguntas> {
     obterPerguntasAleatorias(element: any) {
         var deferred = this.Q.defer();
         var idPerguntas = new Array();
+        var qtd = Number(element.quantidade)
 
         this._collection.aggregate([
             { $match: { classe: element.classe } },
-            { $sample: { size: element.quantidade} }
+            { $sample: { size: qtd} }
         ]).toArray(function (err: any, objeto: any) {
             if (err) deferred.reject(err.name + ': ' + err.message);
             if (objeto) {
