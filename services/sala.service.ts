@@ -33,6 +33,19 @@ export class ServiceSalaDAO extends BaseDao<Sala>{
             }
         });
         return deferred.promise;
-    }    
+    }
+    
+    obterPeloCodigo(codigoEnviado: string) {
+        var deferred = this.Q.defer();
+        this._collection.findOne({ codigo: Number(codigoEnviado) }, function (err: any, obj: any) {
+            if (err) deferred.reject(err.name + ': ' + err.message);
+            if (obj) {           
+                deferred.resolve(obj);
+            } else {
+                deferred.resolve();
+            }
+        });  
+        return deferred.promise;
+    }
 }
 
