@@ -23,7 +23,6 @@ router.get('/', autenticacao, listarSalas);
 router.get('/:_id', autenticacao, obterSala);
 router.get('/listarSalasProfessor/:_id', autenticacao, listarSalasProfessor);
 router.get('/listarAlunos/:_id', autenticacao, listarAlunos);
-router.get('/obterMelhoresAlunos/:_id', autenticacao, obterMelhoresAlunos);
 router.get('/listarSalasProfessorAluno/:idProfessor/:idAluno', autenticacao, listarSalasProfessorAluno);
 router.get('/validarCodigo/:codigo', autenticacao, validarCodigo);
 router.get('/listarSalasAluno/:_id', autenticacao, listarSalasAluno);
@@ -135,21 +134,6 @@ async function listarAlunos(req: any, res: any) {
         
         let alunos = resultado.alunos;
         res.send(alunos); 
-    }
-    catch(ex){
-        res.status(500).send(ex);
-    }  
-}
-
-async function obterMelhoresAlunos(req: any, res: any) { 
-    try{
-        const dao = new ServiceSalaDAO(mongoDB,"Salas");
-        let resultado = await dao.obterPeloId(req.params._id); 
-        
-        let alunos = resultado.alunos;
-        let alunosOrdenados = alunos.sort((a, b) => (a.pontuacao < b.pontuacao) ? 1 : -1);
-        let melhoresAlunos = alunosOrdenados.slice(0, 5);  
-        res.send(melhoresAlunos); 
     }
     catch(ex){
         res.status(500).send(ex);
