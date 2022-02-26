@@ -49,7 +49,7 @@ export class HistoricoDAO extends BaseDao<Historico>{
             {
                 $group: {
                     _id: "$idUsuario",
-                    quantidadeAcertos: { $sum: 1 }
+                    quantidadeAcertos: { $sum: 10 }
                 }
             },
             { $sort:{"quantidadeAcertos": -1} },
