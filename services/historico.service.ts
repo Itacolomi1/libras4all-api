@@ -49,10 +49,10 @@ export class HistoricoDAO extends BaseDao<Historico>{
             {
                 $group: {
                     _id: "$idUsuario",
-                    count: { $sum: 1 }
+                    quantidadeAcertos: { $sum: 1 }
                 }
             },
-            { $sort:{"count": -1} },
+            { $sort:{"quantidadeAcertos": -1} },
             { $limit: 3 }
         ]).toArray(function (err: any, objeto: any) {
             if (err) deferred.reject(err.name + ': ' + err.message);
