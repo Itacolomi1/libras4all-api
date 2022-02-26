@@ -120,10 +120,8 @@ async function obterPorcentagemPorAluno(req: any, res: any) {
 async function obterMelhoresAlunos(req: any, res: any) { 
     try{
         const dao = new HistoricoDAO(mongoDB, "Historico");
-        let historicosPorSala = await dao.obterMelhoresAlunos(req.params.idSala);
-       
+        let historicosPorSala = await dao.obterMelhoresAlunos(req.params.idSala);     
         res.send(historicosPorSala);
-
     }
     catch(ex){
         res.status(500).send(ex.message);
