@@ -41,6 +41,29 @@ export class HistoricoDAO extends BaseDao<Historico>{
         });
         return deferred.promise;
     }
-}
 
+    obterMelhoresAlunos(idSala:string) {
+        var deferred = this.Q.defer();
+        this._collection.aggregate([
+            { $match: { idSala: idSala, acerto: "true"} },
+            {
+                $group: {
+                    _id: "$idUsuario",
+                    count: { $sum: 1 }
+                }
+            },
+            { $sort:{"count": -1} },
+            { $limit: 3 }
+        ]).toArray(function (err: any, objeto: any) {
+            if (err) deferred.reject(err.name + ': ' + err.message);
+            if (objeto) {
+                deferred.resolve(objeto);
+            }          
+             else {
+                deferred.resolve();
+            }
+        });
+        return deferred.promise;
+    }
+}
 

@@ -25,6 +25,7 @@ router.get('/', autenticacao, listarHistorico);
 router.get('/porcentagem/:idSala/:idItem', autenticacao, obterPorcentagemPorItem);
 router.get('/porcentagemAluno/:idSala/:idUsuario', autenticacao, obterPorcentagemPorAluno);
 router.get('/obterItens/:idSala', autenticacao, obterItens);
+router.get('/obterMelhoresAlunos/:idSala', autenticacao, obterMelhoresAlunos);
 router.post('/', autenticacao, criar);
 
 module.exports = router;
@@ -109,6 +110,19 @@ async function obterPorcentagemPorAluno(req: any, res: any) {
        let porcentagem = ((quantidadeAcertos / total) * 100) + ' %'
        
         res.send(porcentagem);
+
+    }
+    catch(ex){
+        res.status(500).send(ex.message);
+    }  
+}
+
+async function obterMelhoresAlunos(req: any, res: any) { 
+    try{
+        const dao = new HistoricoDAO(mongoDB, "Historico");
+        let historicosPorSala = await dao.obterMelhoresAlunos(req.params.idSala);
+       
+        res.send(historicosPorSala);
 
     }
     catch(ex){
