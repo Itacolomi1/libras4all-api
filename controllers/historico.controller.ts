@@ -162,7 +162,7 @@ async function buscarPerguntasQuiz(idSala: any){
 
 async function buscarSinaisMeteoro(idSala: any){
     const daoMeteoro = new MeteoroDAO(mongoDB, "Meteoro");
-    const itens = (await daoMeteoro.obterPeloItem(idSala)).sinais;
+    const itens = (await daoMeteoro.obterPeloItem(idSala)).descricao;
     return itens;
 }
 
