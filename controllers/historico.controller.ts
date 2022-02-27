@@ -56,7 +56,7 @@ async function obterItens(req: any, res: any) {
         else if(resultado.tipoJogo == "Meteoro"){
             itens = await buscarSinaisMeteoro(req.params.idSala);
         }
-        else if(resultado.tipoJogo == "MestreMandou"){
+        else if(resultado.tipoJogo == "Mestre Mandou"){
             itens = await buscarSinaisMestreMandou(req.params.idSala);
         }
         res.send(itens);
@@ -161,13 +161,13 @@ async function criar(req: any, res: any) {
 
 async function buscarPerguntasQuiz(idSala: any){
     const daoQuiz = new QuizDAO(mongoDB, "Quiz");
-    const itens = (await daoQuiz.obterPeloItem(idSala)).perguntas;
+    const itens = (await daoQuiz.obterPeloItem(idSala));
     return itens;
 }
 
 async function buscarSinaisMeteoro(idSala: any){
     const daoMeteoro = new MeteoroDAO(mongoDB, "Meteoro");
-    const itens = (await daoMeteoro.obterPeloItem(idSala)).descricao;
+    const itens = (await daoMeteoro.obterPeloItem(idSala)).sinais;
     return itens;
 }
 
