@@ -5,6 +5,7 @@ import { ServiceSalaDAO } from "../services/sala.service";
 import { QuizDAO } from "../services/quiz.service";
 import { MeteoroDAO } from "../services/meteoro.service";
 import { MestreMandouDAO } from "../services/mestreMandou.service";
+import { UsuarioDAO } from "../services/usuario.service";
 import autenticacao from "../middleware/autenticacao";
 
 var express = require('express');
@@ -143,6 +144,10 @@ async function criar(req: any, res: any) {
 
         const dao = new HistoricoDAO(mongoDB,'Historico');
         let resultado = await dao.criar(historico);  
+
+        if(req.body.acerto == "true"){
+            atualizarUsuario(req.body.idUsuario);        
+        }
         res.send(resultado);
     }
     catch(ex){
@@ -170,5 +175,13 @@ async function buscarSinaisMestreMandou(idSala: any){
     const daoMeteoro = new MestreMandouDAO(mongoDB, "MestreMandou");
     const itens = (await daoMeteoro.obterPeloItem(idSala)).sinais;
     return itens;
+}
+
+async function atualizarUsuario(idUsuario: any) {
+    const dao = new UsuarioDAO(mongoDB,'Usuarios');
+    let libracoinsPorAcerto = 10;
+    let usuario = await dao.obterPeloId(idUsuario); 
+    usuario.libracoins = usuario.libracoins + libracoinsPorAcerto;
+    let resultado = await dao.atualizar(idUsuario, usuario);  
 }
 //#endregion
