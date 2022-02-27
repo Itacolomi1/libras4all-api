@@ -2,7 +2,8 @@
 import { Meteoro } from "../models/meteoro";
 import { MeteoroDAO } from "../services/meteoro.service";
 import autenticacao from "../middleware/autenticacao";
-
+import { SinalMeteoro } from "../models/sinalMeteoro";
+import { SinalMeteoroDAO } from "../services/sinalMeteoro.service";
 
 var express = require('express');
 var router = express.Router();
@@ -21,8 +22,9 @@ declare global{
 router.get('/', autenticacao, listarMeteoros);
 router.get('/:_id', autenticacao, obterMeteoro);
 router.get('/obterMeteoroPorSala/:idSala', autenticacao, obterMeteoroPorSala);
-router.get('/obterSinalMeteoro/:_id', autenticacao, obterSinalMeteoro);
+router.get('/obterSinal/:_id', autenticacao, obterSinalMeteoro);
 router.post('/', autenticacao, criar);
+router.post('/criarSinal', autenticacao, criarSinal);
 
 module.exports = router;
 
@@ -42,12 +44,12 @@ async function listarMeteoros(req: any, res: any) {
 
 async function obterSinalMeteoro(req: any, res: any) { 
     try{
-        const dao = new MeteoroDAO(mongoDB, "Sinais_Meteoro");
+        const dao = new SinalMeteoroDAO(mongoDB, "SinaisMeteoro");
         let resultado = await dao.obterPeloId(req.params._id);
         res.send(resultado);
     }
     catch(ex){
-        res.status(500).send(ex);
+        res.status(500).send(ex.message);
     }  
 }
 
@@ -93,12 +95,26 @@ async function criar(req: any, res: any) {
         res.status(500).send(ex.message);
     }  
 }
+
+async function criarSinal(req: any, res: any) {
+    try{
+        const dao = new SinalMeteoroDAO(mongoDB, "SinaisMeteoro");
+        let sinal = new SinalMeteoro();  
+        sinal.descricao = req.body.descricao;
+        sinal.caminhoImagem = req.body.caminhoImagem;
+        let resultado = await dao.criar(sinal);
+        res.send(resultado);
+    }
+    catch(ex){
+        res.status(500).send(ex.message);
+    }  
+}
 //#endregion
 
 //#region Métodos
 
 async function obterSinais(){
-    const dao = new MeteoroDAO(mongoDB,'Sinais_Meteoro');      
+    const dao = new SinalMeteoroDAO(mongoDB,'SinaisMeteoro');      
     const sinais = await dao.obterSinaisAleatorias();       
     return sinais;   
 }
