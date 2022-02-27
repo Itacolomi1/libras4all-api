@@ -161,7 +161,7 @@ async function criar(req: any, res: any) {
 
 async function buscarPerguntasQuiz(idSala: any){
     const daoQuiz = new QuizDAO(mongoDB, "Quiz");
-    const itens = (await daoQuiz.obterPeloItem(idSala));
+    const itens = (await daoQuiz.obterPeloItem(idSala)).perguntas;
     return itens;
 }
 
