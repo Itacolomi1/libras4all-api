@@ -23,7 +23,7 @@ declare global{
 
 //#region Rotas
 router.get('/', autenticacao, listarHistorico);
-router.get('/porcentagem/:idSala/:idItem', autenticacao, obterPorcentagemPorItem);
+router.get('/porcentagem/:idSala/:idItem', autenticacao, obterQuantidadePorItem);
 router.get('/porcentagemAluno/:idSala/:idUsuario', autenticacao, obterPorcentagemPorAluno);
 router.get('/obterItens/:idSala', autenticacao, obterItens);
 router.get('/obterMelhoresAlunos/:idSala', autenticacao, obterMelhoresAlunos);
@@ -66,11 +66,10 @@ async function obterItens(req: any, res: any) {
     }  
 }
 
-async function obterPorcentagemPorItem(req: any, res: any) { 
+async function obterQuantidadePorItem(req: any, res: any) { 
     try{
         const dao = new HistoricoDAO(mongoDB, "Historico");
         let registrosHistorico = await dao.obterPorcentagemPorItem(req.params.idSala, req.params.idItem);
-
         var registrosErro = registrosHistorico.filter(function (e: any) {
             return e.acerto == "true"
         });
@@ -81,10 +80,13 @@ async function obterPorcentagemPorItem(req: any, res: any) {
 
        let quantidadeAcertos = Object.keys(registrosAcerto).length;
        let quantidadeErros = Object.keys(registrosErro).length;
-       let total = quantidadeAcertos + quantidadeErros;
-       let porcentagem = ((quantidadeAcertos / total) * 100) + ' %'
        
-        res.send(porcentagem);
+       var retorno = {
+        quantidadeAcertos: quantidadeAcertos,
+        quantidadeErros: quantidadeErros
+       };
+       
+        res.send(retorno);
 
     }
     catch(ex){
