@@ -64,7 +64,15 @@ async function rankingGeral(req: any, res: any) {
         const dao = new UsuarioDAO(mongoDB,"Usuarios");
         let resultado = await dao.listar(); 
         let alunosOrdenados = resultado.sort((a, b) => (a.libracoins < b.libracoins) ? 1 : -1);
-        let melhoresAlunos = alunosOrdenados.slice(0, 5);  
+        var i = 1;
+        let melhoresAlunos: any[] = [];
+        
+        alunosOrdenados.forEach((element: any) => {
+            element.posicao = i;
+            melhoresAlunos.push(element);
+            i++;
+        }); 
+
         res.send(melhoresAlunos); 
     }
     catch(ex){
