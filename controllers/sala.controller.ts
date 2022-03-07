@@ -3,6 +3,7 @@ import { Sala } from "../models/sala";
 import { ServiceSalaDAO } from "../services/sala.service";
 import { HistoricoDAO } from "../services/historico.service";
 import autenticacao from "../middleware/autenticacao"
+import { UsuarioDAO } from "../services/usuario.service";
 
 var express = require('express');
 var router = express.Router();
@@ -212,8 +213,11 @@ async function atualizar(req: any, res: any) {
 
 async function adicionarAluno(req: any, res: any){
     try{
+        const useDao = new UsuarioDAO(mongoDB,'Usuarios');
+        let Usuario = await useDao.obterPeloId(req.body.idAluno);      
+
         const dao = new ServiceSalaDAO(mongoDB,'Salas');
-        let resultado = await dao.adicionarAluno(req.body.idSala, req.body.idAluno);  
+        let resultado = await dao.adicionarAluno(req.body.idSala, req.body.idAluno, Usuario.nome);  
         res.send(resultado);
     }
     catch(ex){

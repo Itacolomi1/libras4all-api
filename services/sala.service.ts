@@ -3,12 +3,12 @@ import { BaseDao } from "../core/baseDAO.core";
 
 export class ServiceSalaDAO extends BaseDao<Sala>{
     
-    adicionarAluno(idSala: string, idAluno: string){
+    adicionarAluno(idSala: string, idAluno: string, nomeAluno: string){
         var deferred = this.Q.defer();
 
         this._collection.findOneAndUpdate(
             { "_id": new this._objectID.createFromHexString(idSala) },
-            {$push: {"alunos": {_id: idAluno, pontuacao: 0}}}, 
+            {$push: {"alunos": {_id: idAluno,nome: nomeAluno ,pontuacao: 0}}}, 
             function (err: any, obj: any) {
             if (err) deferred.reject(err.name + ': ' + err.message);    
             if (obj) {                                                      
