@@ -9,7 +9,7 @@ var express = require('express');
 var router = express.Router();
 
 var mongoDB = require('config/database.ts');
-mongoDB.connect();
+
 
 declare global{
     var conn: any;
@@ -157,8 +157,11 @@ async function criar(req: any, res: any) {
 }
 
 async function login(req: any, res: any) {
-    try{
-        const dao = new UsuarioDAO(mongoDB, "Usuarios");
+
+    const conexao = mongoDB.connect();
+    try{        
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new UsuarioDAO(conexao, "Usuarios");
         var senhaHash = hash(req.body.senha);
     
         let resultado = await dao.autenticar(req.body.email, senhaHash);  
@@ -171,6 +174,9 @@ async function login(req: any, res: any) {
     }
     catch(ex){
         res.status(500).send(ex.message);
+    }
+    finally{
+        await conexao.close();
     }
 }
 

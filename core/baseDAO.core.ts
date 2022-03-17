@@ -8,9 +8,9 @@ export abstract class BaseDao<T> implements IBaseDAO<T> {
     public readonly _objectID: any;
 
     constructor(db: any,collection: string) {
-        this._objectID = db.ObjectID();
-        db.connect();
-        this._collection = global.conn.collection(collection);
+        this._objectID = require('mongodb').ObjectID;
+        const database = db.db("LIBRAS4ALL_DB");       
+        this._collection = database.collection(collection);
     }
 
     criar(item: T): Promise<boolean> {
