@@ -7,9 +7,7 @@ import autenticacao from "../middleware/autenticacao";
 var hash = require('object-hash');
 var express = require('express');
 var router = express.Router();
-
 var mongoDB = require('config/database.ts');
-
 
 declare global{
     var conn: any;
@@ -37,31 +35,43 @@ module.exports = router;
 
 //#region Requisições GET
 
-async function listar(req: any, res: any) {      
+async function listar(req: any, res: any) {  
+    const conexao = mongoDB.connect();    
     try{ 
-        const dao = new UsuarioDAO(mongoDB,'Usuarios');
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new UsuarioDAO(conexao,'Usuarios');
         let resultado = await dao.listar();  
         res.send(resultado);
     }
     catch(ex){
         res.status(500).send(ex.message);
     } 
+    finally{
+        await conexao.close();
+    }
 }
 
 async function obterUsuario(req: any, res: any) {     
+    const conexao = mongoDB.connect();
     try{ 
-        const dao = new UsuarioDAO(mongoDB,'Usuarios');
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new UsuarioDAO(conexao,'Usuarios');
         let resultado = await dao.obterPeloId(req.params._id );
         res.send(resultado);
     }
     catch(ex){
       res.status(500).send(ex.message);
-    }    
+    }  
+    finally{
+        await conexao.close();
+    }  
 }
 
 async function rankingGeral(req: any, res: any) { 
+    const conexao = mongoDB.connect();
     try{
-        const dao = new UsuarioDAO(mongoDB,"Usuarios");
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new UsuarioDAO(conexao,"Usuarios");
         let resultado = await dao.listar(); 
         let alunosOrdenados = resultado.sort((a, b) => (a.libracoins < b.libracoins) ? 1 : -1);
         var i = 1;
@@ -78,13 +88,17 @@ async function rankingGeral(req: any, res: any) {
     catch(ex){
         res.status(500).send(ex.message);
     }  
+    finally{
+        await conexao.close();
+    }
 }
 
-
 async function obterNivel(req: any, res:any) {
+    const conexao = mongoDB.connect();
     try{
+        await conexao.connect({ useUnifiedTopology: true });
         const idUsuario = req.params._id;
-        const dao = new UsuarioDAO(mongoDB, "Usuarios");
+        const dao = new UsuarioDAO(conexao, "Usuarios");
         let resultado = await (await dao.obterPeloId(idUsuario)).libracoins;
         let nivel = '';
         
@@ -109,11 +123,16 @@ async function obterNivel(req: any, res:any) {
     catch(ex){
         res.status(500).send(ex.message);
     }
+    finally{
+        await conexao.close();
+    }
 }
 
 async function obterAlunosPorProfessor(req: any, res: any) { 
+    const conexao = mongoDB.connect();
     try{
-        const dao = new ServiceSalaDAO(mongoDB, "Salas");
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new ServiceSalaDAO(conexao, "Salas");
         let resultado = await dao.listarSalasProfessor(req.params._id);
         let alunosFiltrado = new Set();        
 
@@ -126,6 +145,9 @@ async function obterAlunosPorProfessor(req: any, res: any) {
     }
     catch(ex){
         res.status(500).send(ex.message);
+    }
+    finally{
+        await conexao.close();
     }   
 }
 
@@ -134,8 +156,10 @@ async function obterAlunosPorProfessor(req: any, res: any) {
 //#region Requisições POST
 
 async function criar(req: any, res: any) {
+    const conexao = mongoDB.connect();
     try{  
-        var emailValidado = await validarEmail(req.body.email);
+        await conexao.connect({ useUnifiedTopology: true });
+        var emailValidado = await validarEmail(req.body.email, conexao);
         if(emailValidado){
             let usuario = new Usuario();    
             usuario.nome = req.body.nome;
@@ -143,7 +167,7 @@ async function criar(req: any, res: any) {
             usuario.senha = hash(req.body.senha);
             usuario.libracoins = 10;
 
-            const dao = new UsuarioDAO(mongoDB,'Usuarios');
+            const dao = new UsuarioDAO(conexao,'Usuarios');
             let resultado = await dao.criar(usuario);  
             res.send(resultado);
         }
@@ -153,11 +177,13 @@ async function criar(req: any, res: any) {
     }
     catch(ex){
         res.status(500).send(ex.message);
-    }  
+    } 
+    finally{
+        await conexao.close();
+    } 
 }
 
 async function login(req: any, res: any) {
-
     const conexao = mongoDB.connect();
     try{        
         await conexao.connect({ useUnifiedTopology: true });
@@ -185,42 +211,48 @@ async function login(req: any, res: any) {
 //#region Requisições PUT
 
 async function atualizar(req: any, res: any) {
+    const conexao = mongoDB.connect();
     try{ 
+        await conexao.connect({ useUnifiedTopology: true });
         let usuario = new Usuario(); 
         usuario._id = req.body._id;
         usuario.senha = hash(req.body.senha);
 
-        const dao = new UsuarioDAO(mongoDB,'Usuarios');
+        const dao = new UsuarioDAO(conexao,'Usuarios');
         let resultado = await dao.atualizar(req.body._id, usuario);  
         res.send(resultado);
     }
     catch(ex){
         res.status(500).send(ex.message);
     } 
+    finally{
+        await conexao.close();
+    }
 }
-
-
-
-
 //#endregion
 
 //#region Requisições DELETE
 
 async function deletar(req: any, res: any) {
+    const conexao = mongoDB.connect();
     try{ 
-        const dao = new UsuarioDAO(mongoDB,'Usuarios');
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new UsuarioDAO(conexao,'Usuarios');
         let resultado = await dao.excluir(req.params._id );  
         res.send(resultado);
     }
     catch(ex){
         res.status(500).send(ex.message);
+    }
+    finally{
+        await conexao.close();
     }  
 }
 //#endregion
 
 //#region Métodos
-async function validarEmail(email: any){
-    const dao = new UsuarioDAO(mongoDB,'Usuarios');
+async function validarEmail(email: any, conexao: any){
+    const dao = new UsuarioDAO(conexao,'Usuarios');
     let resultado = await dao.obterPeloEmail(email); 
     return resultado === undefined;
   }

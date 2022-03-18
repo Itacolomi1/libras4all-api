@@ -8,8 +8,6 @@ import autenticacao from "../middleware/autenticacao";
 var express = require('express');
 var router = express.Router();
 var mongoDB = require('config/database.ts');
-const ObjectID = mongoDB.ObjectID();
-mongoDB.connect();
 
 declare global{
     var conn: any;
@@ -32,56 +30,116 @@ module.exports = router;
 //#region Requisições GET
 
 async function obterPergunta(req: any, res: any) {
-    const dao = new PerguntasDAO(mongoDB,'Perguntas'); 
-    let resultado = await dao.obterPeloId(req.params._id);  
-    res.send(resultado);
+    const conexao = mongoDB.connect();
+    try{
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new PerguntasDAO(conexao,'Perguntas'); 
+        let resultado = await dao.obterPeloId(req.params._id);  
+        res.send(resultado);
+    }
+    catch(ex){
+        res.status(500).send(ex.message);
+    } 
+    finally{
+        await conexao.close();
+    } 
 }
 
 async function obterQuantidade(req: any, res: any) {
-    const dao = new PerguntasDAO(mongoDB,'Perguntas'); 
-    let resultado = await dao.obterPerguntasPorClasse(req.params.classe);  
-    var quantidade = 0;
-    resultado.forEach(() => {
-        quantidade++;
-    });
-    res.send({quantidade});
+    const conexao = mongoDB.connect();
+    try{
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new PerguntasDAO(conexao,'Perguntas'); 
+        let resultado = await dao.obterPerguntasPorClasse(req.params.classe);  
+        var quantidade = 0;
+        resultado.forEach(() => {
+            quantidade++;
+        });
+        res.send({quantidade});
+    }
+    catch(ex){
+        res.status(500).send(ex.message);
+    } 
+    finally{
+        await conexao.close();
+    } 
 }
 
 async function obterQuantidadeCustomizada(req: any, res: any) {
-    const dao = new PerguntasDAO(mongoDB,'Perguntas'); 
-    let resultado = await dao.obterPerguntasPorProfessor(req.params._id);  
-    var quantidade = 0;
-    resultado.forEach(() => {
-        quantidade++;
-    });
-    res.send({quantidade});
+    const conexao = mongoDB.connect();
+    try{
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new PerguntasDAO(conexao,'Perguntas'); 
+        let resultado = await dao.obterPerguntasPorProfessor(req.params._id);  
+        var quantidade = 0;
+        resultado.forEach(() => {
+            quantidade++;
+        });
+        res.send({quantidade});
+    }
+    catch(ex){
+        res.status(500).send(ex.message);
+    } 
+    finally{
+        await conexao.close();
+    } 
 }
 
 async function obterPerguntasPorClasse(req: any, res: any) {
-    const dao = new PerguntasDAO(mongoDB,'Perguntas');  
-    let resultado = await dao.obterPerguntasPorClasse(req.params.classe);   
-    res.send(resultado);
+    const conexao = mongoDB.connect();
+    try{
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new PerguntasDAO(conexao,'Perguntas');  
+        let resultado = await dao.obterPerguntasPorClasse(req.params.classe);   
+        res.send(resultado);
+    }
+    catch(ex){
+        res.status(500).send(ex.message);
+    } 
+    finally{
+        await conexao.close();
+    } 
 }
 
 //#endregion
 
 //#region Requisições POST
 async function novaPergunta(req: any, res: any) {
-    const dao = new PerguntasDAO(mongoDB,'Perguntas');
-    let pergunta = new Perguntas();
-    pergunta.descricao = req.body.descricao;
-    pergunta.classe = req.body.classe;
-    pergunta.caminhoImagem = req.body.caminhoImagem;
-    pergunta.idProfessor = req.body.idProfessor;
-    pergunta.alternativas = criarAlternativas(req.body.alternativas);      
-    let resultado = await dao.criar(pergunta);    
-    res.send(resultado);
+    const conexao = mongoDB.connect();
+    try{
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new PerguntasDAO(conexao,'Perguntas');
+        let pergunta = new Perguntas();
+        pergunta.descricao = req.body.descricao;
+        pergunta.classe = req.body.classe;
+        pergunta.caminhoImagem = req.body.caminhoImagem;
+        pergunta.idProfessor = req.body.idProfessor;
+        pergunta.alternativas = criarAlternativas(req.body.alternativas);      
+        let resultado = await dao.criar(pergunta);    
+        res.send(resultado);
+    }
+    catch(ex){
+        res.status(500).send(ex.message);
+    } 
+    finally{
+        await conexao.close();
+    } 
 }
 
 async function obterPerguntasEmLote(req: any, res: any) {
-    const dao = new PerguntasDAO(mongoDB,'Perguntas');
-    let resultado = await dao.obterPerguntasEmLote(req.body);
-    res.send(resultado);
+    const conexao = mongoDB.connect();
+    try{
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new PerguntasDAO(conexao,'Perguntas');
+        let resultado = await dao.obterPerguntasEmLote(req.body);
+        res.send(resultado);
+    }
+    catch(ex){
+        res.status(500).send(ex.message);
+    } 
+    finally{
+        await conexao.close();
+    } 
 }
 //#endregion
 

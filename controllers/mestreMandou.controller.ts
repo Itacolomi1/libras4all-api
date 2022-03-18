@@ -8,14 +8,11 @@ import autenticacao from "../middleware/autenticacao";
 var express = require('express');
 var router = express.Router();
 var mongoDB = require('config/database.ts');
-const ObjectID = mongoDB.ObjectID();
-mongoDB.connect();
 
 declare global{
     var conn: any;
     var collection: any;
 }
-
 //#endregion
 
 //#region Rotas
@@ -26,40 +23,54 @@ router.post('/', autenticacao, criar);
 router.post('/criarSinal', autenticacao, criarSinal);
 
 module.exports = router;
-
 //#endregion
 
 //#region Requisições GET
 async function listarJogos(req: any, res: any) { 
+    const conexao = mongoDB.connect();
     try{
-        const dao = new MestreMandouDAO(mongoDB, "MestreMandou");
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new MestreMandouDAO(conexao, "MestreMandou");
         let resultado = await dao.listar();
         res.send(resultado);
     }
     catch(ex){
         res.status(500).send(ex.message);
     }  
+    finally{
+        await conexao.close();
+    }
 }
 
 async function obterJogo(req: any, res: any) { 
+    const conexao = mongoDB.connect();
     try{
-        const dao = new MestreMandouDAO(mongoDB, "MestreMandou");
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new MestreMandouDAO(conexao, "MestreMandou");
         let resultado = await dao.obterPeloId(req.params._id);
         res.send(resultado);
     }
     catch(ex){
         res.status(500).send(ex.message);
+    }
+    finally{
+        await conexao.close();
     }  
 }
 
 async function obterSinal(req: any, res: any) { 
+    const conexao = mongoDB.connect();
     try{
-        const dao = new MestreMandouDAO(mongoDB, "SinaisMestreMandou");
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new MestreMandouDAO(conexao, "SinaisMestreMandou");
         let resultado = await dao.obterPeloId(req.params._id);
         res.send(resultado);
     }
     catch(ex){
         res.status(500).send(ex.message);
+    }
+    finally{
+        await conexao.close();
     }  
 }
 
@@ -67,23 +78,29 @@ async function obterSinal(req: any, res: any) {
 
 //#region Requisições POST
 async function criar(req: any, res: any) {
+    const conexao = mongoDB.connect();
     try{
-        console.log('entrou')
-        const dao = new MestreMandouDAO(mongoDB, "MestreMandou");
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new MestreMandouDAO(conexao, "MestreMandou");
         let mestreMandou = new MestreMandou();  
         mestreMandou.idSala = req.body.idSala;
-        mestreMandou.sinais = await obterSinais();
+        mestreMandou.sinais = await obterSinais(conexao);
         let resultado = await dao.criar(mestreMandou);
         res.send(resultado);
     }
     catch(ex){
         res.status(500).send(ex.message);
-    }  
+    } 
+    finally{
+        await conexao.close();
+    } 
 }
 
 async function criarSinal(req: any, res: any) {
+    const conexao = mongoDB.connect();
     try{
-        const dao = new SinalMestreMandouDAO(mongoDB, "SinaisMestreMandou");
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new SinalMestreMandouDAO(conexao, "SinaisMestreMandou");
         let sinalMestreMandou = new SinalMestreMandou();  
         sinalMestreMandou.descricao = req.body.descricao;
         let resultado = await dao.criar(sinalMestreMandou);
@@ -91,14 +108,17 @@ async function criarSinal(req: any, res: any) {
     }
     catch(ex){
         res.status(500).send(ex.message);
-    }  
+    } 
+    finally{
+        await conexao.close();
+    } 
 }
 //#endregion
 
 //#region Métodos
 
-async function obterSinais(){
-    const dao = new MestreMandouDAO(mongoDB,'SinaisMestreMandou');      
+async function obterSinais(conexao: any){
+    const dao = new MestreMandouDAO(conexao,'SinaisMestreMandou');      
     const sinais = await dao.obterSinaisAleatorias();       
     return sinais;   
 }
