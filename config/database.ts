@@ -11,13 +11,15 @@ services.connect = connect;
 services.ObjectID = ObjectID;
 module.exports = services;
 
-function connect() { 
+function connect(){
     var connection = process.env.CUSTOMCONNSTR_connectionStringV2 || config.connectionStringV2;
-    var database = process.env.databaseV2 || config.databaseV2;
-    const mongo = require('mongodb').MongoClient;
-    mongo.connect(connection, { useUnifiedTopology: true })
-    .then((conn: any) => global.conn = conn.db(database))
-    .catch((err: any) => console.log(err));
+    const mongoClient = require('mongodb').MongoClient;
+    const client = new mongoClient(connection);
+    return client;
+}
+
+async function close(conexao: any) {
+    conexao.close();
 }
 
 function ObjectID(){

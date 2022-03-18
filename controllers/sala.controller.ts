@@ -8,18 +8,14 @@ import { UsuarioDAO } from "../services/usuario.service";
 var express = require('express');
 var router = express.Router();
 var mongoDB = require('config/database.ts');
-const ObjectID = mongoDB.ObjectID();
-mongoDB.connect();
 
 declare global{
     var conn: any;
     var collection: any;
 }
-
 //#endregion
 
 //#region Rotas
-
 router.get('/', autenticacao, listarSalas);
 router.get('/:_id', autenticacao, obterSala);
 router.get('/listarSalasProfessor/:_id', autenticacao, listarSalasProfessor);
@@ -35,36 +31,47 @@ router.put('/adicionarAluno', autenticacao, adicionarAluno);
 router.delete('/:_id', autenticacao, deletar);
 
 module.exports = router;
-
 //#endregion
 
 //#region Requisições GET
 
 async function listarSalas(req: any, res: any) { 
+    const conexao = mongoDB.connect();
     try{
-        const dao = new ServiceSalaDAO(mongoDB, "Salas");
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new ServiceSalaDAO(conexao, "Salas");
         let resultado = await dao.listar();
         res.send(resultado);
     }
     catch(ex){
         res.status(500).send(ex);
-    }  
+    } 
+    finally{
+        await conexao.close();
+    } 
 }
 
 async function obterSala(req: any, res: any) { 
-    try{    
-        const dao = new ServiceSalaDAO(mongoDB,"Salas");
+    const conexao = mongoDB.connect();
+    try{ 
+        await conexao.connect({ useUnifiedTopology: true });   
+        const dao = new ServiceSalaDAO(conexao,"Salas");
         let resultado = await dao.obterPeloId(req.params._id ); 
         res.send(resultado); 
     }    
     catch(ex){
         res.status(500).send(ex);
-    }  
+    } 
+    finally{
+        await conexao.close();
+    } 
 }
 
 async function obterAlunosPorProfessor(req: any, res: any) { 
-    try {   
-        const dao = new ServiceSalaDAO(mongoDB,'Salas');    
+    const conexao = mongoDB.connect();
+    try {  
+        await conexao.connect({ useUnifiedTopology: true }); 
+        const dao = new ServiceSalaDAO(conexao,'Salas');    
         let resultado = await dao.listarSalasProfessor(req.params.idProfessor);
         let alunos = new Set();  
         await Promise.all(resultado.map(async (dado: any) => {           
@@ -76,23 +83,33 @@ async function obterAlunosPorProfessor(req: any, res: any) {
     } 
     catch(ex){
       res.status(500).send(ex.message);
-    }   
-  }
+    } 
+    finally{
+        await conexao.close();
+    }  
+}
 
 async function listarSalasProfessor(req: any, res: any) { 
+    const conexao = mongoDB.connect();
     try{
-        const dao = new ServiceSalaDAO(mongoDB, "Salas");
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new ServiceSalaDAO(conexao, "Salas");
         let resultado = await dao.listarSalasProfessor(req.params._id);
         res.send(resultado);
     }
     catch(ex){
         res.status(500).send(ex);
-    }  
+    } 
+    finally{
+        await conexao.close();
+    } 
 }
 
 async function listarSalasProfessorAluno(req: any, res: any) { 
+    const conexao = mongoDB.connect();
     try{
-        const dao = new ServiceSalaDAO(mongoDB, "Salas");
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new ServiceSalaDAO(conexao, "Salas");
         let resultado = await dao.listarSalasProfessor(req.params.idProfessor);
         let salas = new Array;        
 
@@ -106,12 +123,17 @@ async function listarSalasProfessorAluno(req: any, res: any) {
     }
     catch(ex){
         res.status(500).send(ex);
-    }   
+    } 
+    finally{
+        await conexao.close();
+    }  
 }
 
 async function listarSalasAluno(req: any, res: any) { 
+    const conexao = mongoDB.connect();
     try{
-        const dao = new ServiceSalaDAO(mongoDB, "Salas");
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new ServiceSalaDAO(conexao, "Salas");
         let resultado = await dao.listar();
         let salas = new Array;        
 
@@ -125,12 +147,17 @@ async function listarSalasAluno(req: any, res: any) {
     }
     catch(ex){
         res.status(500).send(ex);
-    }  
+    } 
+    finally{
+        await conexao.close();
+    } 
 }
 
 async function listarAlunos(req: any, res: any) { 
+    const conexao = mongoDB.connect();
     try{
-        const dao = new ServiceSalaDAO(mongoDB,"Salas");
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new ServiceSalaDAO(conexao,"Salas");
         let resultado = await dao.obterPeloId(req.params._id); 
         
         let alunos = resultado.alunos;
@@ -138,23 +165,33 @@ async function listarAlunos(req: any, res: any) {
     }
     catch(ex){
         res.status(500).send(ex);
-    }  
+    } 
+    finally{
+        await conexao.close();
+    } 
 }
 
 async function validarCodigo(req: any, res: any) {
+    const conexao = mongoDB.connect();
     try{
-        const dao = new ServiceSalaDAO(mongoDB,"Salas");
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new ServiceSalaDAO(conexao,"Salas");
         let resultado = await dao.obterPeloCodigo(req.params.codigo); 
         res.send(resultado); 
     }
     catch(ex){
         res.status(500).send(ex);
-    }    
+    }  
+    finally{
+        await conexao.close();
+    }  
 }
 
 async function obterPontuacao(req: any, res: any) {
+    const conexao = mongoDB.connect();
     try{
-        const dao = new ServiceSalaDAO(mongoDB, "Salas");
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new ServiceSalaDAO(conexao, "Salas");
         let resultado = await dao.obterPeloId(req.params.idSala); 
         let aluno = new Array;
         resultado.alunos.forEach((element: any) => {      
@@ -167,14 +204,19 @@ async function obterPontuacao(req: any, res: any) {
     }
     catch(ex){
         res.status(500).send(ex.message);
-    }    
+    }  
+    finally{
+        await conexao.close();
+    }  
 }
 //#endregion
 
 //#region Requisições POST
 
 async function criar(req: any, res: any) {   
-    try{    
+    const conexao = mongoDB.connect();
+    try{ 
+        await conexao.connect({ useUnifiedTopology: true });   
         let sala = new Sala(); 
         sala.codigo = obterCodigo(1000, 9999);
         sala.descricao = req.body.descricao;
@@ -184,13 +226,16 @@ async function criar(req: any, res: any) {
         sala.alunos = [];
         sala.idProfessor = req.body.idProfessor;
 
-        const dao = new ServiceSalaDAO(mongoDB,"Salas");
+        const dao = new ServiceSalaDAO(conexao,"Salas");
         let resultado = await dao.criar(sala);  
         res.send(resultado);
     }
     catch(ex){
         res.status(500).send(ex)
-    }  
+    } 
+    finally{
+        await conexao.close();
+    } 
 }
 
 //#endregion
@@ -198,40 +243,52 @@ async function criar(req: any, res: any) {
 //#region Requisições PUT
 
 async function atualizar(req: any, res: any) {
+    const conexao = mongoDB.connect();
     try{
+        await conexao.connect({ useUnifiedTopology: true });
         let sala = new Sala(); 
         sala.status = req.body.ativa;
         
-        const dao = new ServiceSalaDAO(mongoDB,'Salas');
+        const dao = new ServiceSalaDAO(conexao,'Salas');
         let resultado = await dao.atualizar(req.body._id, sala);  
         res.send(resultado);
     }
     catch(ex){
         res.status(500).send(ex)
-    }      
+    }    
+    finally{
+        await conexao.close();
+    }  
 }
 
 async function adicionarAluno(req: any, res: any){
+    const conexao = mongoDB.connect();
     try{
-        const useDao = new UsuarioDAO(mongoDB,'Usuarios');
+        await conexao.connect({ useUnifiedTopology: true });
+        const useDao = new UsuarioDAO(conexao,'Usuarios');
         let Usuario = await useDao.obterPeloId(req.body.idAluno);      
 
-        const dao = new ServiceSalaDAO(mongoDB,'Salas');
+        const dao = new ServiceSalaDAO(conexao,'Salas');
         let resultado = await dao.adicionarAluno(req.body.idSala, req.body.idAluno, Usuario.nome);  
         res.send(resultado);
     }
     catch(ex){
         res.status(500).send(ex)
     }  
+    finally{
+        await conexao.close();
+    }
 }
 //#endregion
 
 //#region Requisições DELETE
 
 async function deletar(req: any, res: any) {
+    const conexao = mongoDB.connect();
     try{
-        const dao = new ServiceSalaDAO(mongoDB,'Salas');
-        const daoHistorico = new HistoricoDAO(mongoDB, "Historico");
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new ServiceSalaDAO(conexao,'Salas');
+        const daoHistorico = new HistoricoDAO(conexao, "Historico");
 
         let resultado = await dao.excluir(req.params._id );
         res.send(resultado);
@@ -239,6 +296,9 @@ async function deletar(req: any, res: any) {
     catch(ex){
         res.status(500).send(ex)
     }  
+    finally{
+        await conexao.close();
+    }
 }
 
 //#endregion
