@@ -24,6 +24,7 @@ router.get('/porcentagem/:idSala/:idItem', autenticacao, obterQuantidadePorItem)
 router.get('/quantidadePorAluno/:idSala/:idUsuario', autenticacao, quantidadePorAluno);
 router.get('/obterItens/:idSala', autenticacao, obterItens);
 router.get('/obterMelhoresAlunos/:idSala', autenticacao, obterMelhoresAlunos);
+router.get('/obterDadosPorAlunoSala/:idSala/:idUsuario', autenticacao, obterDadosPorAlunoSala);
 router.post('/', autenticacao, criar);
 
 module.exports = router;
@@ -144,6 +145,22 @@ async function obterMelhoresAlunos(req: any, res: any) {
         const dao = new HistoricoDAO(conexao, "Historico");
         let historicosPorSala = await dao.obterMelhoresAlunos(req.params.idSala);     
         res.send(historicosPorSala);
+    }
+    catch(ex){
+        res.status(500).send(ex.message);
+    } 
+    finally{
+        await conexao.close();
+    } 
+}
+
+async function obterDadosPorAlunoSala(req: any, res: any) { 
+    const conexao = mongoDB.connect();
+    try{
+        await conexao.connect({ useUnifiedTopology: true });
+        const dao = new HistoricoDAO(conexao, "Historico");
+        let registrosHistorico = await dao.obterPorcentagemPorAluno(req.params.idSala, req.params.idUsuario);           
+        res.send(registrosHistorico);
     }
     catch(ex){
         res.status(500).send(ex.message);
