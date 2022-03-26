@@ -189,7 +189,7 @@ async function criar(req: any, res: any) {
         let resultado = await dao.criar(historico);  
 
         if(req.body.acerto == "true"){
-            atualizarUsuario(req.body.idUsuario, conexao);        
+            await atualizarUsuario(req.body.idUsuario, conexao);        
         }
         res.send(resultado);
     }
@@ -224,10 +224,17 @@ async function buscarSinaisMestreMandou(idSala: any, conexao: any){
 }
 
 async function atualizarUsuario(idUsuario: any, conexao: any) {
-    const dao = new UsuarioDAO(conexao,'Usuarios');
-    let libracoinsPorAcerto = 10;
-    let usuario = await dao.obterPeloId(idUsuario); 
-    usuario.libracoins = usuario.libracoins + libracoinsPorAcerto;
-    let resultado = await dao.atualizar(idUsuario, usuario);  
+    try{
+        const dao = new UsuarioDAO(conexao,'Usuarios');
+        let libracoinsPorAcerto = 10;
+        let usuario = await dao.obterPeloId(idUsuario); 
+        usuario.libracoins = usuario.libracoins + libracoinsPorAcerto;
+        let resultado = await dao.atualizar(idUsuario, usuario); 
+
+    }catch(ex){
+       console.log('Erro ao atualizar o Usuario');
+       console.log(ex);
+    }
+ 
 }
 //#endregion
