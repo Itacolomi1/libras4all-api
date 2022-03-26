@@ -32,7 +32,7 @@ module.exports = router;
 async function obterPergunta(req: any, res: any) {
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new PerguntasDAO(conexao,'Perguntas'); 
         let resultado = await dao.obterPeloId(req.params._id);  
         res.send(resultado);
@@ -48,7 +48,7 @@ async function obterPergunta(req: any, res: any) {
 async function obterQuantidade(req: any, res: any) {
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new PerguntasDAO(conexao,'Perguntas'); 
         let resultado = await dao.obterPerguntasPorClasse(req.params.classe);  
         var quantidade = 0;
@@ -68,7 +68,7 @@ async function obterQuantidade(req: any, res: any) {
 async function obterQuantidadeCustomizada(req: any, res: any) {
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new PerguntasDAO(conexao,'Perguntas'); 
         let resultado = await dao.obterPerguntasPorProfessor(req.params._id);  
         var quantidade = 0;
@@ -88,7 +88,7 @@ async function obterQuantidadeCustomizada(req: any, res: any) {
 async function obterPerguntasPorClasse(req: any, res: any) {
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new PerguntasDAO(conexao,'Perguntas');  
         let resultado = await dao.obterPerguntasPorClasse(req.params.classe);   
         res.send(resultado);
@@ -107,7 +107,7 @@ async function obterPerguntasPorClasse(req: any, res: any) {
 async function novaPergunta(req: any, res: any) {
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new PerguntasDAO(conexao,'Perguntas');
         let pergunta = new Perguntas();
         pergunta.descricao = req.body.descricao;
@@ -129,7 +129,7 @@ async function novaPergunta(req: any, res: any) {
 async function obterPerguntasEmLote(req: any, res: any) {
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new PerguntasDAO(conexao,'Perguntas');
         let resultado = await dao.obterPerguntasEmLote(req.body);
         res.send(resultado);

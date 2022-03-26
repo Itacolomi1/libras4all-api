@@ -30,7 +30,7 @@ module.exports = router;
 async function listar(req: any, res: any) {    
   const conexao = mongoDB.connect();
   try {  
-    await conexao.connect({ useUnifiedTopology: true }); 
+    await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true}); 
     const dao = new ProfessorDAO(conexao, 'Professores');
     let resultado = await dao.listar();  
     res.send(resultado);
@@ -46,7 +46,7 @@ async function listar(req: any, res: any) {
 async function obterProfessor(req: any, res: any) { 
   const conexao = mongoDB.connect();
   try {  
-    await conexao.connect({ useUnifiedTopology: true }); 
+    await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true}); 
     const dao = new ProfessorDAO(conexao,'Professores');    
     let resultado = await dao.obterPeloId(req.params._id );  
     res.send(resultado); 
@@ -66,7 +66,7 @@ async function obterProfessor(req: any, res: any) {
 async function criar(req: any, res: any) {    
   const conexao = mongoDB.connect();
   try{  
-    await conexao.connect({ useUnifiedTopology: true });
+    await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
     var emailValidado = await validarEmail(req.body.email, conexao);
     if(emailValidado){
       let professor = new Professor();   
@@ -93,7 +93,7 @@ async function criar(req: any, res: any) {
 async function login(req: any, res: any) {
   const conexao = mongoDB.connect();
   try{
-    await conexao.connect({ useUnifiedTopology: true });
+    await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
     const dao = new ProfessorDAO(conexao, "Professores");
     var senhaHash = hash(req.body.senha);
     let resultado = await dao.autenticar(req.body.email, senhaHash);  
@@ -119,7 +119,7 @@ async function login(req: any, res: any) {
 async function atualizar(req: any, res: any) {
   const conexao = mongoDB.connect();
   try{
-    await conexao.connect({ useUnifiedTopology: true });
+    await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
     let professor = new Professor(); 
     professor._id = req.body._id;
     professor.senha = hash(req.body.senha);
@@ -143,7 +143,7 @@ async function atualizar(req: any, res: any) {
 async function deletar(req: any, res: any) {
   const conexao = mongoDB.connect();
   try{
-    await conexao.connect({ useUnifiedTopology: true });
+    await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
     const dao = new ProfessorDAO(conexao,'Professores');
     let resultado = await dao.excluir(req.params._id );  
     res.send(resultado);

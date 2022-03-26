@@ -34,7 +34,7 @@ module.exports = router;
 async function listarHistorico(req: any, res: any) { 
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new HistoricoDAO(conexao, "Historico");
         let resultado = await dao.listar();
         res.send(resultado);
@@ -50,7 +50,7 @@ async function listarHistorico(req: any, res: any) {
 async function obterItens(req: any, res: any) { 
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const daoSala = new ServiceSalaDAO(conexao, "Salas");
         let itens;
         let resultado = await daoSala.obterPeloId(req.params.idSala); 
@@ -76,7 +76,7 @@ async function obterItens(req: any, res: any) {
 async function obterQuantidadePorItem(req: any, res: any) { 
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new HistoricoDAO(conexao, "Historico");
         let registrosHistorico = await dao.obterPorcentagemPorItem(req.params.idSala, req.params.idItem);
         var registrosErro = registrosHistorico.filter(function (e: any) {
@@ -108,7 +108,7 @@ async function obterQuantidadePorItem(req: any, res: any) {
 async function quantidadePorAluno(req: any, res: any) { 
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new HistoricoDAO(conexao, "Historico");
         let registrosHistorico = await dao.obterPorcentagemPorAluno(req.params.idSala, req.params.idUsuario);
 
@@ -141,7 +141,7 @@ async function quantidadePorAluno(req: any, res: any) {
 async function obterMelhoresAlunos(req: any, res: any) { 
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new HistoricoDAO(conexao, "Historico");
         let historicosPorSala = await dao.obterMelhoresAlunos(req.params.idSala);     
         res.send(historicosPorSala);
@@ -157,7 +157,7 @@ async function obterMelhoresAlunos(req: any, res: any) {
 async function obterDadosPorAlunoSala(req: any, res: any) { 
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new HistoricoDAO(conexao, "Historico");
         let registrosHistorico = await dao.obterPorcentagemPorAluno(req.params.idSala, req.params.idUsuario);           
         res.send(registrosHistorico);
@@ -176,7 +176,7 @@ async function obterDadosPorAlunoSala(req: any, res: any) {
 async function criar(req: any, res: any) {
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });  
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});  
         let historico = new Historico();    
         historico.idSala = req.body.idSala;
         historico.idUsuario = req.body.idUsuario;
