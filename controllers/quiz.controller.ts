@@ -26,7 +26,7 @@ module.exports = router;
 async function obterQuiz(req: any, res: any) { 
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new QuizDAO(conexao, "Quiz");
         let resultado = await dao.obterPeloId(req.params._id);
         res.send(resultado);
@@ -42,7 +42,7 @@ async function obterQuiz(req: any, res: any) {
 async function obterQuizPorSala(req: any, res: any) { 
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new QuizDAO(conexao, "Quiz");
         let resultado = await dao.obterQuizPorSala(req.params.idSala);
         res.send(resultado);
@@ -61,7 +61,7 @@ async function obterQuizPorSala(req: any, res: any) {
 async function criar(req: any, res: any) {
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new QuizDAO(conexao,'Quiz');
         let quiz = new Quiz();   
         quiz.idSala = req.body.idSala;
