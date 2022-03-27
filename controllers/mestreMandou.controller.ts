@@ -29,7 +29,7 @@ module.exports = router;
 async function listarJogos(req: any, res: any) { 
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new MestreMandouDAO(conexao, "MestreMandou");
         let resultado = await dao.listar();
         res.send(resultado);
@@ -45,7 +45,7 @@ async function listarJogos(req: any, res: any) {
 async function obterJogo(req: any, res: any) { 
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new MestreMandouDAO(conexao, "MestreMandou");
         let resultado = await dao.obterPeloId(req.params._id);
         res.send(resultado);
@@ -61,7 +61,7 @@ async function obterJogo(req: any, res: any) {
 async function obterSinal(req: any, res: any) { 
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new MestreMandouDAO(conexao, "SinaisMestreMandou");
         let resultado = await dao.obterPeloId(req.params._id);
         res.send(resultado);
@@ -80,7 +80,7 @@ async function obterSinal(req: any, res: any) {
 async function criar(req: any, res: any) {
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new MestreMandouDAO(conexao, "MestreMandou");
         let mestreMandou = new MestreMandou();  
         mestreMandou.idSala = req.body.idSala;
@@ -99,7 +99,7 @@ async function criar(req: any, res: any) {
 async function criarSinal(req: any, res: any) {
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new SinalMestreMandouDAO(conexao, "SinaisMestreMandou");
         let sinalMestreMandou = new SinalMestreMandou();  
         sinalMestreMandou.descricao = req.body.descricao;

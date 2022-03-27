@@ -38,7 +38,7 @@ module.exports = router;
 async function listar(req: any, res: any) {  
     const conexao = mongoDB.connect();    
     try{ 
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new UsuarioDAO(conexao,'Usuarios');
         let resultado = await dao.listar();  
         res.send(resultado);
@@ -54,7 +54,7 @@ async function listar(req: any, res: any) {
 async function obterUsuario(req: any, res: any) {     
     const conexao = mongoDB.connect();
     try{ 
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new UsuarioDAO(conexao,'Usuarios');
         let resultado = await dao.obterPeloId(req.params._id );
         res.send(resultado);
@@ -70,7 +70,7 @@ async function obterUsuario(req: any, res: any) {
 async function rankingGeral(req: any, res: any) { 
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new UsuarioDAO(conexao,"Usuarios");
         let resultado = await dao.listar(); 
         let alunosOrdenados = resultado.sort((a, b) => (a.libracoins < b.libracoins) ? 1 : -1);
@@ -96,7 +96,7 @@ async function rankingGeral(req: any, res: any) {
 async function obterNivel(req: any, res:any) {
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const idUsuario = req.params._id;
         const dao = new UsuarioDAO(conexao, "Usuarios");
         let resultado = await (await dao.obterPeloId(idUsuario)).libracoins;
@@ -131,7 +131,7 @@ async function obterNivel(req: any, res:any) {
 async function obterAlunosPorProfessor(req: any, res: any) { 
     const conexao = mongoDB.connect();
     try{
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new ServiceSalaDAO(conexao, "Salas");
         let resultado = await dao.listarSalasProfessor(req.params._id);
         let alunosFiltrado = new Set();        
@@ -158,7 +158,7 @@ async function obterAlunosPorProfessor(req: any, res: any) {
 async function criar(req: any, res: any) {
     const conexao = mongoDB.connect();
     try{  
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         var emailValidado = await validarEmail(req.body.email, conexao);
         if(emailValidado){
             let usuario = new Usuario();    
@@ -186,7 +186,7 @@ async function criar(req: any, res: any) {
 async function login(req: any, res: any) {
     const conexao = mongoDB.connect();
     try{        
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new UsuarioDAO(conexao, "Usuarios");
         var senhaHash = hash(req.body.senha);
     
@@ -213,7 +213,7 @@ async function login(req: any, res: any) {
 async function atualizar(req: any, res: any) {
     const conexao = mongoDB.connect();
     try{ 
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         let usuario = new Usuario(); 
         usuario._id = req.body._id;
         usuario.senha = hash(req.body.senha);
@@ -236,7 +236,7 @@ async function atualizar(req: any, res: any) {
 async function deletar(req: any, res: any) {
     const conexao = mongoDB.connect();
     try{ 
-        await conexao.connect({ useUnifiedTopology: true });
+        await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new UsuarioDAO(conexao,'Usuarios');
         let resultado = await dao.excluir(req.params._id );  
         res.send(resultado);
