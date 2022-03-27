@@ -1,15 +1,12 @@
 export interface IBaseDAO<T> {
 
-    create(item: T): Promise<boolean>;
+    criar(item: T): Promise<boolean>;
 
-    update(id:string,item: T): Promise<boolean>;
+    atualizar(id:string,item: T): Promise<boolean>;
 
-    delete(id: string): Promise<boolean>;
+    excluir(id: string): Promise<boolean>;
 
-    list(item: T): Promise<T[]>;
+    listar(): Promise<T[]>;
 
-    listAll(): Promise<T[]>;
-
-    getById(_id: string): Promise<T>;
-
+    obterPeloId(_id: string): Promise<T>;
 }

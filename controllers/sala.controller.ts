@@ -266,10 +266,10 @@ async function adicionarAluno(req: any, res: any){
     try{
         await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const useDao = new UsuarioDAO(conexao,'Usuarios');
-        let Usuario = await useDao.obterPeloId(req.body.idAluno);      
+        let usuario = await useDao.obterPeloId(req.body.idAluno);      
 
         const dao = new ServiceSalaDAO(conexao,'Salas');
-        let resultado = await dao.adicionarAluno(req.body.idSala, req.body.idAluno, Usuario.nome);  
+        let resultado = await dao.adicionarAluno(req.body.idSala, req.body.idAluno, usuario.nome, usuario.email, usuario.nickname);  
         res.send(resultado);
     }
     catch(ex){
