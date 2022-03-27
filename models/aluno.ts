@@ -1,4 +1,5 @@
 export class Aluno {
     _id: string;
-    pontuacao: number;
+    nome: string;
+    email: string;
 }
