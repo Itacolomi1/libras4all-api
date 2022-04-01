@@ -1,5 +1,5 @@
-export class Aluno {    
-    _id: number;
+export class Aluno {
+    _id: string;
     nome: string;
-    listaSala: Array<string>;
+    email: string;
 }

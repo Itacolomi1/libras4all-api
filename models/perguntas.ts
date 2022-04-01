@@ -3,6 +3,7 @@ import { Alternativa } from "./alternativa";
 export class Perguntas {
     descricao: string;
     classe: string;
-    imagem: any;
+    idProfessor: string;
+    caminhoImagem: string;
     alternativas: Array<Alternativa>
 }
