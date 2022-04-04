@@ -4,6 +4,7 @@ import { MeteoroDAO } from "../services/meteoro.service";
 import autenticacao from "../middleware/autenticacao";
 import { SinalMeteoro } from "../models/sinalMeteoro";
 import { SinalMeteoroDAO } from "../services/sinalMeteoro.service";
+import { ServiceSalaDAO } from "../services/sala.service";
 
 var express = require('express');
 var router = express.Router();
@@ -99,15 +100,32 @@ async function criar(req: any, res: any) {
     try{
         await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new MeteoroDAO(conexao, "Meteoro");
-        let meteoro = new Meteoro();  
-        let alternativas = []; 
-        meteoro.idSala = req.body.idSala;
+        const daoSala = new ServiceSalaDAO(conexao,'Salas');
+        let salaMeteoro = null;
 
-        alternativas = await obterSinais(conexao);
-        meteoro.sinais = alternativas.slice(0, 3);
-        meteoro.alternativas = alternativas;
-        let resultado = await dao.criar(meteoro);
-        res.send(resultado);
+        let sala = await daoSala.obterPeloId(req.body.idSala); 
+
+        if(sala.tipoJogo == 'Meteoro'){
+            salaMeteoro = await dao.obterMeteoroPorSala(req.body.idSala); 
+            
+            if(salaMeteoro.length == 0){
+                let meteoro = new Meteoro();  
+                let alternativas = []; 
+                meteoro.idSala = req.body.idSala;
+        
+                alternativas = await obterSinais(conexao);
+                meteoro.sinais = alternativas.slice(0, 3);
+                meteoro.alternativas = alternativas;
+                let resultado = await dao.criar(meteoro);
+                res.send(resultado);
+            }
+            else{
+                throw new Error("Já existe um jogo cadastrado na sala");
+            }
+        }
+        else{
+            throw new Error("A sala cadastrada é de outro tipo!");
+        }       
     }
     catch(ex){
         res.status(500).send(ex.message);
