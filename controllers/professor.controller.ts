@@ -67,13 +67,16 @@ async function criar(req: any, res: any) {
   const conexao = mongoDB.connect();
   try{  
     await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
-    var emailValidado = await validarEmail(req.body.email, conexao);
-    if(emailValidado){
-      let professor = new Professor();   
-      professor.nome = req.body.nome;
-      professor.email = req.body.email;
-      professor.senha = hash(req.body.senha);
+    
+    let professor = new Professor();   
+    professor.nome = req.body.nome;
+    professor.email = (req.body.email).toLowerCase();
+    professor.senha = hash(req.body.senha);
+    professor.dataNascimento = req.body.dataNascimento;
 
+    var emailValidado = await validarEmail(professor.email, conexao);
+    
+    if(emailValidado){
       const dao = new ProfessorDAO(conexao,'Professores');
       let resultado = await dao.criar(professor); 
       res.send(resultado);
