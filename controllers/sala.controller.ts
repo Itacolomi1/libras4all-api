@@ -265,15 +265,31 @@ async function adicionarAluno(req: any, res: any){
     const conexao = mongoDB.connect();
     try{
         await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
-        const useDao = new UsuarioDAO(conexao,'Usuarios');
-        let usuario = await useDao.obterPeloId(req.body.idAluno);      
-
         const dao = new ServiceSalaDAO(conexao,'Salas');
-        let resultado = await dao.adicionarAluno(req.body.idSala, req.body.idAluno, usuario.nome, usuario.email, usuario.nickname);  
-        res.send(resultado);
+        const usuarioDao = new UsuarioDAO(conexao,'Usuarios');
+        var vagaReservada = false;
+
+        let sala = await dao.obterPeloId(req.body.idSala); 
+      
+        await Promise.all(sala.alunos.map(async (dado: any) => {  
+            if(dado._id == req.body.idAluno){
+                console.log('entrou')
+                vagaReservada = true;
+            } 
+        }));
+
+        if(!vagaReservada){
+            let usuario = await usuarioDao.obterPeloId(req.body.idAluno);      
+    
+            let resultado = await dao.adicionarAluno(req.body.idSala, req.body.idAluno, usuario.nome, usuario.email, usuario.nickname);  
+            res.send(resultado);
+        }   
+        else{
+            throw new Error("Aluno já está na sala!");
+        }
     }
     catch(ex){
-        res.status(500).send(ex)
+        res.status(500).send(ex.message)
     }  
     finally{
         await conexao.close();
