@@ -3,6 +3,7 @@ import { MestreMandou } from "../models/mestreMandou";
 import { SinalMestreMandou } from "../models/sinalMestreMandou";
 import { MestreMandouDAO } from "../services/mestreMandou.service";
 import { SinalMestreMandouDAO } from "../services/sinalMestreMandou.service";
+import { ServiceSalaDAO } from "../services/sala.service";
 import autenticacao from "../middleware/autenticacao";
 
 var express = require('express');
@@ -82,11 +83,28 @@ async function criar(req: any, res: any) {
     try{
         await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
         const dao = new MestreMandouDAO(conexao, "MestreMandou");
-        let mestreMandou = new MestreMandou();  
-        mestreMandou.idSala = req.body.idSala;
-        mestreMandou.sinais = await obterSinais(conexao);
-        let resultado = await dao.criar(mestreMandou);
-        res.send(resultado);
+        const daoSala = new ServiceSalaDAO(conexao,'Salas');
+        let salaMestreMandou = null;
+
+        let sala = await daoSala.obterPeloId(req.body.idSala); 
+
+        if(sala.tipoJogo == 'Mestre Mandou'){
+            salaMestreMandou = await dao.obterMestreMandouPorSala(req.body.idSala); 
+            
+            if(salaMestreMandou.length == 0){
+                let mestreMandou = new MestreMandou();  
+                mestreMandou.idSala = req.body.idSala;
+                mestreMandou.sinais = await obterSinais(conexao);
+                let resultado = await dao.criar(mestreMandou);
+                res.send(resultado);
+            }
+            else{
+                throw new Error("Já existe um jogo cadastrado na sala");
+            }
+        }
+        else{
+            throw new Error("A sala cadastrada é de outro tipo!");
+        }    
     }
     catch(ex){
         res.status(500).send(ex.message);
