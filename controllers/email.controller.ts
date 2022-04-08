@@ -68,13 +68,13 @@ async function enviar(req: any, res: any) {
         await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});  
         
         if(req.body.isMobile){
-            await configurarEmailUsuario(conexao, req.body._id);
+            await configurarEmailUsuario(conexao, req.body.email);
         }
         else{
-            await configurarEmailProfessor(conexao, req.body._id);
+            await configurarEmailProfessor(conexao, req.body.email);
         }
 
-        res.status(200).send('E-mail enviado com sucesso!');
+        res.status(200).send('OK. Verificação realizada!');
     }
     catch(ex){
         res.status(500).send(ex.message);
@@ -169,22 +169,25 @@ async function atualizarProfessor(conexao: any, idProfessor: string, novaSenha: 
     return resultado;
 }
 
-async function configurarEmailUsuario(conexao: any, idUsuario: string){
+async function configurarEmailUsuario(conexao: any, email: string){
     const daoUsuario = new UsuarioDAO(conexao,'Usuarios'); 
-    let usuario = await daoUsuario.obterPeloId(idUsuario);
+    let usuario = await daoUsuario.obterPeloEmail(email);
 
-    var linkRedefinir = await criarLinkRedefinirSenha(conexao, idUsuario, true);
-
-    await enviarEmail(conexao, usuario.nome, linkRedefinir, usuario.email);    
+    if(usuario){
+        var linkRedefinir = await criarLinkRedefinirSenha(conexao, usuario._id, true);
+        await enviarEmail(conexao, usuario.nome, linkRedefinir, usuario.email); 
+    }
+   
 }
 
-async function configurarEmailProfessor(conexao: any, idProfessor: string){
+async function configurarEmailProfessor(conexao: any, email: string){
     const daoProfessor = new ProfessorDAO(conexao,'Professores');
-    let professor = await daoProfessor.obterPeloId(idProfessor);
+    let professor = await daoProfessor.obterPeloEmail(email);
 
-    var linkRedefinir = await criarLinkRedefinirSenha(conexao, idProfessor, false);
-
-    await enviarEmail(conexao, professor.nome, linkRedefinir, professor.email);    
+    if(professor){
+        var linkRedefinir = await criarLinkRedefinirSenha(conexao, professor._id, false);
+        await enviarEmail(conexao, professor.nome, linkRedefinir, professor.email);
+    }    
 }
 
 async function enviarEmail(conexao: any, nome: string, linkRedefinir: string, email: string) {
