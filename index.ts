@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 
 require('rootpath')(); 
+const nodemailer = require("nodemailer");
 
 let PORT: number = 0;
 var expressJwt = require('express-jwt');
@@ -27,7 +28,7 @@ app.use('/api/professor',require('./controllers/professor.controller'));
 app.use('/api/meteoro',require('./controllers/meteoro.controller'));
 app.use('/api/historico',require('./controllers/historico.controller'));
 app.use('/api/mestreMandou',require('./controllers/mestreMandou.controller'));
-
+app.use('/api/email',require('./controllers/email.controller'));
 
 
 app.listen(PORT, ()=>{
