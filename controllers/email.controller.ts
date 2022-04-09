@@ -62,12 +62,13 @@ async function validar(req: any, res: any) {
 //#region Requisições POST
 
 async function enviar(req: any, res: any) {
-    console.log('entrou')
     const conexao = mongoDB.connect();
     try{
         await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});  
         
-        if(req.body.isMobile){
+        var flag = JSON.parse(req.body.isMobile);
+
+        if(flag){
             await configurarEmailUsuario(conexao, req.body.email);
         }
         else{
@@ -89,7 +90,6 @@ async function enviar(req: any, res: any) {
 //#region Requisições PUT
 
 async function atualizar(req: any, res: any) {
-    console.log('teste')
     const conexao = mongoDB.connect();
     try{
         await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});  
@@ -98,15 +98,15 @@ async function atualizar(req: any, res: any) {
 
         let historico = await dao.obterPeloId(req.body.idHistorico); 
 
-        console.log(historico)
         var novaSenha = req.body.novaSenha;
         let resultado = null;
+        var id = historico.idUsuario.toString();
 
         if(historico.isMobile){
-            resultado = await atualizarUsuario(conexao, historico.idUsuario, novaSenha);
+            resultado = await atualizarUsuario(conexao, id, novaSenha);
         }
         else{
-            resultado = await atualizarProfessor(conexao, historico.idUsuario, novaSenha);
+            resultado = await atualizarProfessor(conexao, id, novaSenha);
         }
 
         res.send(resultado);      
@@ -137,7 +137,6 @@ async function criarLinkRedefinirSenha(conexao: any, idUsuario: string, flag: an
 }
 
 function buscarDataMaxima(data: Date){
-    console.log(data)
     var MM = data.getMonth();
     var dd = data.getDate();
     var yyyy = data.getFullYear();
