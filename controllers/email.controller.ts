@@ -132,7 +132,7 @@ async function criarLinkRedefinirSenha(conexao: any, idUsuario: string, flag: an
     emailHistorico.isMobile = flag;
 
     let idHistorico = await dao.criarHistorico(emailHistorico);
-    var linkRedefinir = "https://libras4all-web.herokuapp.com/RedefinirSenha?req="+ idHistorico;
+    var linkRedefinir = "https://libras4all-web.herokuapp.com/Update?req="+ idHistorico;
     return linkRedefinir;
 }
 
