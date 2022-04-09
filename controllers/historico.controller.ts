@@ -113,11 +113,11 @@ async function quantidadePorAluno(req: any, res: any) {
         let registrosHistorico = await dao.obterPorcentagemPorAluno(req.params.idSala, req.params.idUsuario);
 
         var registrosErro = registrosHistorico.filter(function (e: any) {
-            return e.acerto == "true"
+            return e.acerto == "false"
         });
 
         var registrosAcerto = registrosHistorico.filter(function (e: any) {
-            return e.acerto == "false";
+            return e.acerto == "true";
         });
 
         let quantidadeAcertos = Object.keys(registrosAcerto).length;
