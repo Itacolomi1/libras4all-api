@@ -195,8 +195,8 @@ async function enviarEmail(conexao: any, nome: string, linkRedefinir: string, em
 
     let titulo = "Redefinir Senha - Libras4All";       
     
-    let mensagem = "Olá, " + nome + "! <br />" +
-    "Link para redefinir a senha: " + linkRedefinir + " <br /><br />" +
+    let mensagem = "Olá, " + nome + " <br />" +
+    "Link para redefinir a senha:  <a href=" + linkRedefinir + ">Clique aqui!</a> <br /><br />" +
     "O link ficará ativo por 15 minutos!";
 
     await dao.enviar(email, titulo, mensagem);    
