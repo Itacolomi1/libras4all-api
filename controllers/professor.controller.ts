@@ -82,7 +82,7 @@ async function criar(req: any, res: any) {
       res.send(resultado);
     }
     else{
-      throw new Error("Email já cadastrado!");
+      throw new Error('{"mensagem": "Email já cadastrado!"}');
     }
   }
   catch(ex){

@@ -285,7 +285,7 @@ async function adicionarAluno(req: any, res: any){
             res.send(resultado);
         }   
         else{
-            throw new Error("Aluno já está na sala!");
+            throw new Error('{"mensagem": "Aluno já está na sala!"}');
         }
     }
     catch(ex){
