@@ -179,11 +179,11 @@ async function criar(req: any, res: any) {
                 res.send(resultado);
             }
             else{
-                throw new Error("Nome de usuário já cadastrado!");
+                throw new Error('{"mensagem": "Nome de usuário já cadastrado!"}');
             }
         }
         else{
-            throw new Error("Email já cadastrado!");
+            throw new Error('{"mensagem":"Email já cadastrado!"}');
         }
     }
     catch(ex){
