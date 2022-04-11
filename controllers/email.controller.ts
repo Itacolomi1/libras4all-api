@@ -43,7 +43,7 @@ async function validar(req: any, res: any) {
         var dataAtual = new Date();
 
         if(dataMaxima < dataAtual){
-            throw new Error("Link expirado!");
+            throw new Error('{"mensagem": "Link expirado!"}');
         }
         else{
             res.status(200).send('Link ativo');

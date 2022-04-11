@@ -99,11 +99,11 @@ async function criar(req: any, res: any) {
                 res.send(resultado);
             }
             else{
-                throw new Error("Já existe um jogo cadastrado na sala");
+                throw new Error('{"mensagem": "Já existe um jogo cadastrado na sala"}');
             }
         }
         else{
-            throw new Error("A sala cadastrada é de outro tipo!");
+            throw new Error('{"mensagem": "A sala cadastrada é de outro tipo!"}');
         }    
     }
     catch(ex){
