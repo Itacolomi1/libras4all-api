@@ -46,7 +46,7 @@ async function validar(req: any, res: any) {
             throw new Error('{"mensagem": "Link expirado!"}');
         }
         else{
-            res.status(200).send('Link ativo');
+            res.status(200).send('{"mensagem": "Link ativo"}');
         }
     }
     catch(ex){
@@ -74,8 +74,7 @@ async function enviar(req: any, res: any) {
         else{
             await configurarEmailProfessor(conexao, req.body.email);
         }
-
-        res.status(200).send('OK. Verificação realizada!');
+        res.status(200).send('{"mensagem": "OK. Verificação realizada!"}');
     }
     catch(ex){
         res.status(500).send(ex.message);
