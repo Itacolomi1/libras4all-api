@@ -33,13 +33,13 @@ export class PerguntasDAO extends BaseDao<Perguntas> {
         return deferred.promise;
     }
 
-    obterPerguntasAleatorias(element: any) {
+    obterPerguntasAleatorias(element: any, idProfessor: string) {
         var deferred = this.Q.defer();
         var idPerguntas = new Array();
         var qtd = Number(element.quantidade)
 
         this._collection.aggregate([
-            { $match: { classe: element.classe } },
+            { $match: { classe: element.classe, idProfessor: idProfessor} },
             { $sample: { size: qtd} }
         ]).toArray(function (err: any, objeto: any) {
             if (err) deferred.reject(err.name + ': ' + err.message);

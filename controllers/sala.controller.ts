@@ -273,7 +273,6 @@ async function adicionarAluno(req: any, res: any){
       
         await Promise.all(sala.alunos.map(async (dado: any) => {  
             if(dado._id == req.body.idAluno){
-                console.log('entrou')
                 vagaReservada = true;
             } 
         }));
