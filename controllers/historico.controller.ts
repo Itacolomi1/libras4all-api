@@ -80,11 +80,11 @@ async function obterQuantidadePorItem(req: any, res: any) {
         const dao = new HistoricoDAO(conexao, "Historico");
         let registrosHistorico = await dao.obterPorcentagemPorItem(req.params.idSala, req.params.idItem);
         var registrosErro = registrosHistorico.filter(function (e: any) {
-            return e.acerto == "true"
+            return e.acerto == "false"
         });
 
         var registrosAcerto = registrosHistorico.filter(function (e: any) {
-            return e.acerto == "false";
+            return e.acerto == "true";
         });
 
         let quantidadeAcertos = Object.keys(registrosAcerto).length;
