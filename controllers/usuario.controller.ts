@@ -201,7 +201,7 @@ async function login(req: any, res: any) {
         const dao = new UsuarioDAO(conexao, "Usuarios");
         var senhaHash = hash(req.body.senha);
     
-        let resultado = await dao.autenticar(req.body.email, senhaHash);  
+        let resultado = await dao.autenticar(req.body.email.toLowerCase(), senhaHash);  
         if(resultado.token == undefined){
             res.status(400).send(resultado.erro);
         }
