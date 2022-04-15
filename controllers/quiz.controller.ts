@@ -68,14 +68,14 @@ async function criar(req: any, res: any) {
         let salaQuiz = null;
 
         let sala = await daoSala.obterPeloId(req.body.idSala); 
-
         if(sala.tipoJogo == 'Quiz'){
             salaQuiz = await dao.obterQuizPorSala(req.body.idSala); 
             
             if(salaQuiz.length == 0){
                 let quiz = new Quiz();   
                 quiz.idSala = req.body.idSala;
-                quiz.perguntas = await obterPerguntas(req.body.perguntas, conexao);
+
+                quiz.perguntas = await obterPerguntas(req.body.perguntas, sala.idProfessor, conexao);
                 
                 let resultado = await dao.criar(quiz);
                 res.send(resultado);
@@ -99,17 +99,25 @@ async function criar(req: any, res: any) {
 
 //#region Métodos
 
-function obterPerguntasAleatorias(dado:any, conexao:any) {
+function obterPerguntasAleatorias(dado:any, idProfessor: any, conexao:any) {
     const dao = new PerguntasDAO(conexao,'Perguntas');
-    var idPerguntas = dao.obterPerguntasAleatorias(dado);
+    var idPerguntas = dao.obterPerguntasAleatorias(dado, idProfessor);
     return idPerguntas;
 }
 
-async function obterPerguntas(dados: any, conexao:any){
+async function obterPerguntas(dados: any, idProfessor: any, conexao:any){
     const perguntas: any[] = [];
     const dao = new PerguntasDAO(conexao,'Perguntas');
-    await Promise.all(dados.map(async (dado: any) => {        
-        const res = await obterPerguntasAleatorias(dado, conexao)       
+    let idProfessorClasse = null;
+    
+    await Promise.all(dados.map(async (dado: any) => {         
+        if(dado.classe != 'Customizada'){
+            idProfessorClasse = null;
+        }  
+        else{
+            idProfessorClasse = idProfessor;
+        }    
+        const res = await obterPerguntasAleatorias(dado, idProfessorClasse, conexao)       
         await Promise.all(res.map(async (element: any) => {
             perguntas.push(element)
         })); 
