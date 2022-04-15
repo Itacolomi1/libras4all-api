@@ -69,10 +69,10 @@ async function enviar(req: any, res: any) {
         var flag = JSON.parse(req.body.isMobile);
 
         if(flag){
-            await configurarEmailUsuario(conexao, req.body.email);
+            await configurarEmailUsuario(conexao, req.body.email.toLowerCase());
         }
         else{
-            await configurarEmailProfessor(conexao, req.body.email);
+            await configurarEmailProfessor(conexao, req.body.email.toLowerCase());
         }
         res.status(200).send('{"mensagem": "OK. Verificação realizada!"}');
     }
