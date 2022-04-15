@@ -74,7 +74,7 @@ async function criar(req: any, res: any) {
     professor.senha = hash(req.body.senha);
     professor.dataNascimento = req.body.dataNascimento;
 
-    var emailValidado = await validarEmail(professor.email, conexao);
+    var emailValidado = await validarEmail(professor.email.toLowerCase(), conexao);
     
     if(emailValidado){
       const dao = new ProfessorDAO(conexao,'Professores');
@@ -99,7 +99,7 @@ async function login(req: any, res: any) {
     await conexao.connect({poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true,useUnifiedTopology: true});
     const dao = new ProfessorDAO(conexao, "Professores");
     var senhaHash = hash(req.body.senha);
-    let resultado = await dao.autenticar(req.body.email, senhaHash);  
+    let resultado = await dao.autenticar(req.body.email.toLowerCase(), senhaHash);  
     
     if(resultado.token == undefined){
       res.status(400).send(resultado.erro);
