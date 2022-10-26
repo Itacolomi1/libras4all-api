@@ -173,11 +173,9 @@ async function criar(req: any, res: any) {
         if (emailValidado){
             var nicknameValidado = await validarNickname(usuario.nickname, conexao);
             
-            if (nicknameValidado){
-                console.log(usuario);
+            if (nicknameValidado){                
                 const dao = new UsuarioDAO(conexao,'Usuarios');
-                let resultado = await dao.criar(usuario);
-                console.log(resultado);  
+                let resultado = await dao.criar(usuario);                
                 res.send(resultado);
             }
             else{
