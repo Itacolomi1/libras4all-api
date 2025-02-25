@@ -23,7 +23,7 @@ To get started with this project, follow these steps:
 
 ## Configuration
 
-The application configuration is stored in the [appSettings.json](http://_vscodecontentref_/0) file. Update this file with your database connection string and other settings as needed.
+The application configuration is stored in the appSettings.json file. Update this file with your database connection string and other settings as needed.
 
 ## Endpoints
 
